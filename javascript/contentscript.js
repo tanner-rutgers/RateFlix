@@ -1,9 +1,15 @@
 var lastTitle = "";
 
 function getInfo(title) {
-	if (!lastTitle || !title.endsWith(lastTitle)) {
+	// var header = $(".jawBone > h3")
+	// if (header.length) {
+	// 	getInfo(header.text());
+	// }
+	var title = $(".jawBone > h3").text();
+	if (title.length && (!lastTitle || !title.endsWith(lastTitle))) {
 		lastTitle = title;
-		console.log(title);
+		var year = $(".year").text().substring(0, 4);
+		console.log("Title: " + title + ", Year: " + year);
 	}
 }
 
@@ -22,10 +28,7 @@ var observerOptions = {
 }
 
 var titleObserver = new MutationObserver(function(mutations, observer) {
-	var header = $(".jawBone > h3")
-	if (header.length) {
-		getInfo(header.text());
-	}
+	getInfo();
 });
 
 var rowObserver = new MutationObserver(function(mutations, observer) {
