@@ -1,0 +1,35 @@
+{
+  "manifest_version": 2,
+
+  "name": "RateFlix",
+  "description": "Show IMDb and Rotten Tomatoes ratings on Netflix",
+  "version": "1.0",
+
+  "page_action": {
+    // "default_icon": {
+    //   "16": "images/icon16.png",
+    //   "24": "images/icon24.png",
+    //   "32": "images/icon32.png"
+    // },
+    "default_title": "RateFlix"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://www.netflix.com/*"],
+      // "css": ["stylesheets/ratings.css"],
+      "js": ["javascript/jquery-3.1.1.min.js", "javascript/contentscript.js"]
+      // "run_at": "document_start"
+      // "all_frames": true
+    }
+  ],
+
+  // "background": {
+  //   "persistent": false,
+  //   "scripts": ["background.js"]
+  // },
+
+  "permissions": [
+    "https://ajax.googleapis.com/"
+  ]
+}
