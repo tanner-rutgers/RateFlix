@@ -16,8 +16,8 @@
 
   "content_scripts": [
     {
-      "matches": ["https://www.netflix.com/*"],
-      // "css": ["stylesheets/ratings.css"],
+      "matches": ["https://*.netflix.com/*"],
+      "css": ["stylesheets/contentscript.css"],
       "js": ["javascript/jquery-3.1.1.min.js", "javascript/contentscript.js", "javascript/omdb.js"]
       // "run_at": "document_start"
       // "all_frames": true
@@ -31,5 +31,7 @@
 
   "permissions": [
     "https://ajax.googleapis.com/"
-  ]
+  ],
+
+  "web_accessible_resources": ["images/imdb_31x14.png"]
 }
