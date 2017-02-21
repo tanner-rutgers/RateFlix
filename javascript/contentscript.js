@@ -9,7 +9,7 @@ function getInfo(title) {
 	if (title.length && (!lastTitle || !title.endsWith(lastTitle))) {
 		lastTitle = title;
 		var year = $(".year").text().substring(0, 4);
-		console.log("Title: " + title + ", Year: " + year);
+		injectRatings(title, year);
 	}
 }
 
