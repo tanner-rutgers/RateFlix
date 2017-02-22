@@ -1,11 +1,24 @@
+var cache = {};
+
 var lastTitle = "";
 
-function getInfo(title) {
+function getRatings(title) {
+	if (cache[title]) {
+		injectRatings(cache[title]);
+	} else {
+		fetchRatings(title, function(ratings) {
+			cache[title] = ratings;
+			injectRatings(ratings);
+		});
+	}
+}
+
+function getInfo() {
 	var title = $(".jawBone > h3").text();
 	if (title.length && (!lastTitle || !title.endsWith(lastTitle))) {
 		lastTitle = title;
-		var year = $(".year").text().substring(0, 4);
-		getRatings(title, year);
+		// var year = $(".year").text().substring(0, 4);
+		getRatings(title);
 	}
 }
 
@@ -13,7 +26,6 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var observerOptions = {
 	childList: true,
-	characterData: true,
 	subtree: true
 }
 
@@ -25,21 +37,19 @@ var rowObserver = new MutationObserver(function(mutations, observer) {
 	mutations.forEach(function(mutation) {
 		if (mutation.addedNodes) {
 			mutation.addedNodes.forEach(function(node) {
-				if (node.classList && node.classList.contains("lolomoRow_title_card")) {
-					console.log("adding title observer");
-					titleObserver.observe(node.querySelector(".jawBoneContent"), observerOptions);
-				}
+				node.nodeType === 1 && node.querySelectorAll(".jawBoneContent").forEach(function(node) {
+					titleObserver.observe(node, observerOptions);
+				})
 			});
 		}
 	});
 });
 
+rowObserver.observe(document.querySelector(".mainView"), observerOptions);
+
 document.querySelectorAll(".jawBoneContent").forEach(function(node) {
-	console.log("adding title observer");
 	titleObserver.observe(node, observerOptions);
 });
-
-rowObserver.observe(document.querySelector(".mainView > div"), { childList: true });
 
 function imdbRating(rating, id) {
 	html = "";

@@ -1,17 +1,16 @@
 var OMDB_URL = 'https://www.omdbapi.com/?';
 
-function getRatings(title, year) {
-	$.getJSON(OMDB_URL, requestOptions(title, year), function(response) {
+function fetchRatings(title, callback) {
+	$.getJSON(OMDB_URL, requestOptions(title), function(response) {
 		ratings = {
 			imdb: response.imdbRating,
 			imdbID: response.imdbID
 		}
-		console.log("Ratings: " + JSON.stringify(ratings));
-		injectRatings(ratings);
+		callback(ratings);
 	});
 }
 
-function requestOptions(title, year) {
+function requestOptions(title) {
 	return {
 		t: title
 	}
