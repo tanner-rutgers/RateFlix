@@ -33,23 +33,40 @@ var titleObserver = new MutationObserver(function(mutations, observer) {
 	getInfo();
 });
 
+function addTitleObserver(node) {
+	node.querySelectorAll(".jawBoneContent").forEach(function(node) {
+		console.log("adding title observer");
+		titleObserver.observe(node, observerOptions);
+	});
+}
+
 var rowObserver = new MutationObserver(function(mutations, observer) {
 	mutations.forEach(function(mutation) {
 		if (mutation.addedNodes) {
 			mutation.addedNodes.forEach(function(node) {
-				node.nodeType === 1 && node.querySelectorAll(".jawBoneContent").forEach(function(node) {
-					titleObserver.observe(node, observerOptions);
-				})
+				if (node.nodeType === 1) {
+					addTitleObserver(node);
+				}
 			});
 		}
 	});
 });
 
-rowObserver.observe(document.querySelector(".mainView"), observerOptions);
-
-document.querySelectorAll(".jawBoneContent").forEach(function(node) {
-	titleObserver.observe(node, observerOptions);
+var mainObserver = new MutationObserver(function(mutations, observer) {
+	var mainView = document.querySelector(".mainView");
+	if (mainView) {
+		rowObserver.observe(mainView, observerOptions);
+		addTitleObserver(mainView);
+		mainObserver.disconnect();
+	}
 });
+
+if (mainView = document.querySelector(".mainView")) {
+	rowObserver.observe(mainView, observerOptions);
+	addTitleObserver(mainView);
+} else {
+	mainObserver.observe(document, observerOptions);
+}
 
 function imdbRating(rating, id) {
 	html = "";
