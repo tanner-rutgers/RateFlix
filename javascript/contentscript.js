@@ -1,17 +1,4 @@
-var cache = {};
-
 var lastTitle = "";
-
-function getRatings(title, callback) {
-	if (cache[title]) {
-		callback(cache[title]);
-	} else {
-		fetchRatings(title, function(ratings) {
-			cache[title] = ratings;
-			callback(ratings);
-		});
-	}
-}
 
 function getInfo(node) {
 	var header = node.querySelector(".jawBone > h3");
@@ -20,7 +7,7 @@ function getInfo(node) {
 		if (title.length && (!lastTitle || !title.endsWith(lastTitle))) {
 			lastTitle = title;
 			// var year = $(".year").text().substring(0, 4);
-			getRatings(title, function(ratings) {
+			fetchRatings(title, function(ratings) {
 				injectRatings(node, ratings);
 			});
 		}
