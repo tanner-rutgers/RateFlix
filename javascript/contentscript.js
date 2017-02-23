@@ -35,8 +35,11 @@ var titleObserver = new MutationObserver(function(mutations, observer) {
 
 function addTitleObserver(node) {
 	node.querySelectorAll(".jawBoneContent").forEach(function(node) {
-		console.log("adding title observer");
-		titleObserver.observe(node, observerOptions);
+		if (!node.hasAttribute("observed")) {
+			console.log("adding title observer");
+			titleObserver.observe(node, observerOptions);
+			node.setAttribute("observed", "true");
+		}
 	});
 }
 

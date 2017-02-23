@@ -22,8 +22,15 @@
     }
   ],
 
+  "background": {
+    "scripts": ["javascript/background.js"]
+  },
+
   "permissions": [
-    "https://ajax.googleapis.com/"
+    "https://*.netflix.com/*",
+    "https://ajax.googleapis.com/",
+    "webNavigation",
+    "tabs"
   ],
 
   "web_accessible_resources": ["images/imdb_31x14.png"]
