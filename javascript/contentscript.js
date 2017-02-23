@@ -2,23 +2,28 @@ var cache = {};
 
 var lastTitle = "";
 
-function getRatings(title) {
+function getRatings(title, callback) {
 	if (cache[title]) {
-		injectRatings(cache[title]);
+		callback(cache[title]);
 	} else {
 		fetchRatings(title, function(ratings) {
 			cache[title] = ratings;
-			injectRatings(ratings);
+			callback(ratings);
 		});
 	}
 }
 
-function getInfo() {
-	var title = $(".jawBone > h3").text();
-	if (title.length && (!lastTitle || !title.endsWith(lastTitle))) {
-		lastTitle = title;
-		// var year = $(".year").text().substring(0, 4);
-		getRatings(title);
+function getInfo(node) {
+	var header = node.querySelector(".jawBone > h3");
+	if (header) {
+		var title = header.textContent;
+		if (title.length && (!lastTitle || !title.endsWith(lastTitle))) {
+			lastTitle = title;
+			// var year = $(".year").text().substring(0, 4);
+			getRatings(title, function(ratings) {
+				injectRatings(node, ratings);
+			});
+		}
 	}
 }
 
@@ -30,7 +35,7 @@ var observerOptions = {
 }
 
 var titleObserver = new MutationObserver(function(mutations, observer) {
-	getInfo();
+	getInfo(mutations[mutations.length - 1].target);
 });
 
 function addTitleObserver(node) {
@@ -71,25 +76,47 @@ if (mainView = document.querySelector(".mainView")) {
 	mainObserver.observe(document, observerOptions);
 }
 
-function imdbRating(rating, id) {
-	html = "";
-	if (rating) {
-		html += imdbSpan(id, "<img src=" + chrome.extension.getURL("images/imdb_31x14.png") + " />");
-		html += imdbSpan(id, rating + "/10");
-	}
-	return html;
+function imdbSpan(id) {
+	var span = document.createElement("SPAN");
+	span.className = "imdbRating";
+	return span;
 }
 
-function imdbLink(id, html) {
-	return "<a href=https://www.imdb.com/title/" + id + " target='_blank'>" + html + "</a>";
+function imdbLink(id) {
+	var link = document.createElement("A");
+	link.href = "https://www.imdb.com/title/" + id;
+	link.target = "_blank";
+	return link;
 }
 
-function imdbSpan(id, html) {
-	return "<span class='imdbRating'>" + imdbLink(id, html) + "</span>";
+function imdbLogo(id) {
+	var span = imdbSpan(id);
+	var link = imdbLink(id);
+	var image = document.createElement("IMG");
+	image.src = chrome.extension.getURL("images/imdb_31x14.png");
+	link.appendChild(image);
+	span.appendChild(link);
+	return span;
 }
 
-function injectRatings(ratings) {
+function imdbRating(id, rating) {
+	var span = imdbSpan(id);
+	var link = imdbLink(id);
+	var rating = document.createTextNode(rating + "/10");
+	link.appendChild(rating);
+	span.appendChild(link);
+	return span;
+}
+
+function injectRatings(node, ratings) {
 	rating = ratings["imdb"];
 	id = ratings["imdbID"];
-	$(".meta").append(imdbRating(rating, id));
+
+	if (!rating) { return }
+
+	var meta = node.querySelector(".meta");
+	if (!meta.querySelector(".imdbRating")) {
+		meta.appendChild(imdbLogo(id));
+		meta.appendChild(imdbRating(id, rating));
+	}
 }
