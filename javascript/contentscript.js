@@ -1,12 +1,10 @@
 var lastTitle = "";
 
-function getInfo(node) {
-	var header = node.querySelector(".jawBone > h3");
-	if (header) {
-		var title = header.textContent;
-		if (title.length && (!lastTitle || !title.endsWith(lastTitle))) {
+function getInfo(node, titleNode) {
+	if (titleNode) {
+		var title = titleNode.textContent;
+		if (title.length && (!lastTitle || lastTitle == title || !title.endsWith(lastTitle))) {
 			lastTitle = title;
-			// var year = $(".year").text().substring(0, 4);
 			fetchRatings(title, function(ratings) {
 				injectRatings(node, ratings);
 			});
@@ -21,17 +19,28 @@ var observerOptions = {
 	subtree: true
 }
 
-var titleObserver = new MutationObserver(function(mutations, observer) {
-	getInfo(mutations[mutations.length - 1].target);
+var jawBoneObserver = new MutationObserver(function(mutations, observer) {
+	node = mutations[mutations.length - 1].target;
+	getInfo(node, node.querySelector(".jawBone > h3"));
+});
+
+var titleCardObserver = new MutationObserver(function(mutations, observer) {
+	node = mutations[mutations.length - 1].target;
+	getInfo(node, node.querySelector(".bob-title"));
 });
 
 function addTitleObserver(node) {
 	node.querySelectorAll(".jawBoneContent").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
-			console.log("adding title observer");
-			titleObserver.observe(node, observerOptions);
+			jawBoneObserver.observe(node, observerOptions);
 			node.setAttribute("observed", "true");
-		}
+		};
+	})
+	node.querySelectorAll(".title-card-container > div > span").forEach(function(node) {
+		if (!node.hasAttribute("observed")) {
+			titleCardObserver.observe(node, observerOptions);
+			node.setAttribute("observed", "true");
+		};
 	});
 }
 
@@ -81,6 +90,7 @@ function imdbLogo(id) {
 	var link = imdbLink(id);
 	var image = document.createElement("IMG");
 	image.src = chrome.extension.getURL("images/imdb_31x14.png");
+	image.className = "imdbLogo";
 	link.appendChild(image);
 	span.appendChild(link);
 	return span;
@@ -102,7 +112,7 @@ function injectRatings(node, ratings) {
 	if (!rating) { return }
 
 	var meta = node.querySelector(".meta");
-	if (!meta.querySelector(".imdbRating")) {
+	if (meta && !meta.querySelector(".imdbRating")) {
 		meta.appendChild(imdbLogo(id));
 		meta.appendChild(imdbRating(id, rating));
 	}

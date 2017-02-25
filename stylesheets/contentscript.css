@@ -1,3 +1,22 @@
 .imdbRating a {
 	color: #666 !important;
 }
+
+.bob-card .imdbRating {
+	margin-right: .333vw !important;
+	display: inline-block !important;
+	line-height: 2 !important;
+	font-weight: 700 !important;
+}
+
+.imdbLogo {
+	vertical-align: middle;
+}
+
+.bob-card .imdbRating .imdbLogo {
+	margin-bottom: 2px;
+}
+
+.bob-card .imdbRating a {
+	color: #fff !important;
+}
