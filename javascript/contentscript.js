@@ -19,20 +19,20 @@ var observerOptions = {
 	subtree: true
 }
 
-var jawBoneObserver = new MutationObserver(function(mutations, observer) {
-	node = mutations[mutations.length - 1].target;
+var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {
+	var node = mutations[mutations.length - 1].target;
 	getInfo(node, node.querySelector(".jawBone > h3"));
 });
 
 var titleCardObserver = new MutationObserver(function(mutations, observer) {
-	node = mutations[mutations.length - 1].target;
+	var node = mutations[mutations.length - 1].target;
 	getInfo(node, node.querySelector(".bob-title"));
 });
 
 function addTitleObserver(node) {
 	node.querySelectorAll(".jawBoneContent").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
-			jawBoneObserver.observe(node, observerOptions);
+			jawBoneContentObserver.observe(node, observerOptions);
 			node.setAttribute("observed", "true");
 		};
 	})
@@ -61,13 +61,22 @@ var mainObserver = new MutationObserver(function(mutations, observer) {
 	if (mainView) {
 		rowObserver.observe(mainView, observerOptions);
 		addTitleObserver(mainView);
+		addFeaturedInfo(mainView);
 		mainObserver.disconnect();
 	}
 });
 
+function addFeaturedInfo(node) {
+	var jawBone = node.querySelector(".jawBoneContainer > .jawBone");
+	if (jawBone) {
+		getInfo(jawBone, jawBone.querySelector(".title"));
+	}
+}
+
 if (mainView = document.querySelector(".mainView")) {
 	rowObserver.observe(mainView, observerOptions);
 	addTitleObserver(mainView);
+	addFeaturedInfo(mainView);
 } else {
 	mainObserver.observe(document, observerOptions);
 }

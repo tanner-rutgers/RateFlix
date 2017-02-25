@@ -18,7 +18,7 @@
     {
       "matches": ["https://*.netflix.com/*"],
       "css": ["stylesheets/contentscript.css"],
-      "js": ["javascript/jquery-3.1.1.min.js", "javascript/contentscript.js", "javascript/omdb.js"]
+      "js": ["javascript/jquery-3.1.1.min.js", "javascript/omdb.js", "javascript/contentscript.js"]
     }
   ],
 
