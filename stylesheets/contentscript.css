@@ -13,10 +13,15 @@
 	vertical-align: middle;
 }
 
-.bob-card .imdbRating .imdbLogo {
+.bob-card .imdbRating .imdbLogo,
+.player-status .imdbRating .imdbLogo {
 	margin-bottom: 2px;
 }
 
 .bob-card .imdbRating a {
 	color: #fff !important;
+}
+
+.player-status .imdbRating a {
+	color: #adadad !important;
 }

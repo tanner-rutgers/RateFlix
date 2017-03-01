@@ -1,15 +1,33 @@
 var lastTitle = "";
 
-function getInfo(node, titleNode) {
+function getInfo(titleNode, episodeNode, callback) {
+	var info = {};
 	if (titleNode) {
-		var title = titleNode.textContent;
-		if (title.length && (!lastTitle || lastTitle == title || !title.endsWith(lastTitle))) {
-			lastTitle = title;
-			fetchRatings(title, function(ratings) {
-				injectRatings(node, ratings);
-			});
-		}
+		info["title"] = titleNode.textContent;
 	}
+	if (episodeNode) {
+		var text = episodeNode.textContent;
+		var regex = /\D*(\d+)\D*(\d+)/
+		var match = regex.exec(text);
+		info["season"] = match[1];
+		info["episode"] = match[2];
+	}
+	callback(info);
+}
+
+function getRatings(title, season, episode, callback) {
+	if (title && title.length && (!lastTitle || lastTitle == title || !title.endsWith(lastTitle))) {
+		lastTitle = title;
+		fetchRatings(title, season, episode, function(ratings) {
+			callback(ratings);
+		});
+	}
+}
+
+function getInfoAndRatings(titleNode, episodeNode, callback) {
+	getInfo(titleNode, episodeNode, function(info) {
+		getRatings(info["title"], info["season"], info["episode"], callback);
+	})
 }
 
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -21,12 +39,16 @@ var observerOptions = {
 
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations[mutations.length - 1].target;
-	getInfo(node, node.querySelector(".jawBone > h3"));
+	getInfoAndRatings(node.querySelector(".jawBone > h3"), null, function(ratings) {
+		injectRatings(node.querySelector(".meta"), ratings);
+	});
 });
 
 var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations[mutations.length - 1].target;
-	getInfo(node, node.querySelector(".bob-title"));
+	getInfoAndRatings(node.querySelector(".bob-title"), null, function(ratings) {
+		injectRatings(node.querySelector(".meta"), ratings);
+	});
 });
 
 function addTitleObserver(node) {
@@ -35,7 +57,7 @@ function addTitleObserver(node) {
 			jawBoneContentObserver.observe(node, observerOptions);
 			node.setAttribute("observed", "true");
 		};
-	})
+	});
 	node.querySelectorAll(".title-card-container > div > span").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
 			titleCardObserver.observe(node, observerOptions);
@@ -59,17 +81,42 @@ var rowObserver = new MutationObserver(function(mutations, observer) {
 var mainObserver = new MutationObserver(function(mutations, observer) {
 	var mainView = document.querySelector(".mainView");
 	if (mainView) {
+		observer.disconnect();
 		rowObserver.observe(mainView, observerOptions);
 		addTitleObserver(mainView);
 		addFeaturedInfo(mainView);
-		mainObserver.disconnect();
 	}
 });
 
 function addFeaturedInfo(node) {
 	var jawBone = node.querySelector(".jawBoneContainer > .jawBone");
 	if (jawBone) {
-		getInfo(jawBone, jawBone.querySelector(".title"));
+		getInfoAndRatings(jawBone.querySelector(".title"), null, function(ratings) {
+			injectRatings(node.querySelector(".meta"), ratings);
+		});
+	}
+}
+
+var playerObserver = new MutationObserver(function(mutations, observer) {
+	var playerTitle = document.querySelector(".player-status-main-title");
+	if (playerTitle && playerTitle.textContent && playerTitle.textContent.length > 0) {
+		addPlayerInfo(playerTitle);
+	}
+});
+
+function addPlayerInfo(playerTitle) {
+	if (playerTitle) {
+		var infoNode = playerTitle.parentNode;
+		var episodeSpan;
+		Array.prototype.some.call(infoNode.getElementsByTagName('span'), function(span) {
+			if (span.classList.length == 0) {
+				episodeSpan = span;
+				return true;
+			}
+		});
+		getInfoAndRatings(playerTitle, episodeSpan, function(ratings) {
+			injectRatings(infoNode, ratings);
+		});
 	}
 }
 
@@ -77,8 +124,11 @@ if (mainView = document.querySelector(".mainView")) {
 	rowObserver.observe(mainView, observerOptions);
 	addTitleObserver(mainView);
 	addFeaturedInfo(mainView);
+} else if (player = document.querySelector("#netflix-player")) {
+	addPlayerInfo(player);
 } else {
 	mainObserver.observe(document, observerOptions);
+	playerObserver.observe(document, observerOptions);
 }
 
 function imdbSpan(id) {
@@ -120,9 +170,8 @@ function injectRatings(node, ratings) {
 
 	if (!rating) { return }
 
-	var meta = node.querySelector(".meta");
-	if (meta && !meta.querySelector(".imdbRating")) {
-		meta.appendChild(imdbLogo(id));
-		meta.appendChild(imdbRating(id, rating));
+	if (node && !node.querySelector(".imdbRating")) {
+		node.appendChild(imdbLogo(id));
+		node.appendChild(imdbRating(id, rating));
 	}
 }
