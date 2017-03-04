@@ -124,8 +124,11 @@ if (mainView = document.querySelector(".mainView")) {
 	rowObserver.observe(mainView, observerOptions);
 	addTitleObserver(mainView);
 	addFeaturedInfo(mainView);
-} else if (player = document.querySelector("#netflix-player")) {
-	addPlayerInfo(player);
+} else if (playerTitle = document.querySelector(".player-status-main-title")) {
+	console.log("Found player title");
+	if (playerTitle && playerTitle.textContent && playerTitle.textContent.length > 0) {
+		addPlayerInfo(playerTitle);
+	}
 } else {
 	mainObserver.observe(document, observerOptions);
 	playerObserver.observe(document, observerOptions);
