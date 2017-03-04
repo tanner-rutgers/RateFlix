@@ -100,6 +100,7 @@ function addFeaturedInfo(node) {
 var playerObserver = new MutationObserver(function(mutations, observer) {
 	var playerTitle = document.querySelector(".player-status-main-title");
 	if (playerTitle && playerTitle.textContent && playerTitle.textContent.length > 0) {
+		observer.disconnect();
 		addPlayerInfo(playerTitle);
 	}
 });
@@ -120,6 +121,31 @@ function addPlayerInfo(playerTitle) {
 	}
 }
 
+var episodeObserver = new MutationObserver(function(mutations, observer) {
+	var episodeListContainer = document.querySelector(".episode-list-container");
+	if (episodeListContainer) {
+		observer.disconnect();
+		addEpisodeInfo(episodeListContainer);
+	}
+});
+
+function addEpisodeInfo(episodeListContainer) {
+	var title = document.querySelector(".player-status-main-title").textContent;
+	var season = extractSeasonNumber(episodeListContainer.querySelector(".seasons-title").textContent);
+	var episodes = episodeListContainer.querySelectorAll(".episode-list-index");
+	episodes.forEach(function(episode) {
+		getRatings(title, season, episode.textContent, function(ratings) {
+			injectRatings(episode.parentNode, ratings);
+		});
+	});
+}
+
+function extractSeasonNumber(text) {
+	var regex = /(S|s)eason (\d+)/
+	var match = regex.exec(text);
+	return match[2];
+}
+
 if (mainView = document.querySelector(".mainView")) {
 	rowObserver.observe(mainView, observerOptions);
 	addTitleObserver(mainView);
@@ -132,4 +158,5 @@ if (mainView = document.querySelector(".mainView")) {
 } else {
 	mainObserver.observe(document, observerOptions);
 	playerObserver.observe(document, observerOptions);
+	episodeObserver.observe(document, observerOptions);
 }

@@ -25,3 +25,7 @@
 .player-status .imdbRating a {
 	color: #adadad !important;
 }
+
+.episode-list-item-header .imdbRating {
+	margin-left: 8px;
+}
