@@ -4,3 +4,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 		chrome.tabs.executeScript(null, { file: "javascript/contentscript.js" });
 	}
 });
+
+chrome.runtime.onMessage.addListener(function(message, sender, response) {
+	if (message.type == 'showPageAction') {
+		chrome.pageAction.show(sender.tab.id);
+	}
+});

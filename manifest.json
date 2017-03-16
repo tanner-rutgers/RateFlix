@@ -3,7 +3,7 @@
 
   "name": "RateFlix",
   "description": "Show IMDb ratings on Netflix",
-  "version": "1.0",
+  "version": "1.2",
 
   "page_action": {
     "default_icon": {

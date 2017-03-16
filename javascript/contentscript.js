@@ -1,3 +1,5 @@
+chrome.runtime.sendMessage({type: 'showPageAction'});
+
 var lastTitle = "";
 
 function getInfo(titleNode, episodeNode, callback) {
