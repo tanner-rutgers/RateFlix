@@ -1,4 +1,5 @@
 var OMDB_URL = 'https://www.omdbapi.com/?';
+var API_KEY = "placeholder";
 
 var cache = {};
 
@@ -34,7 +35,9 @@ function rtFilter(rating) {
 }
 
 function requestOptions(title, season, episode) {
-	options = {};
+	var options = {
+		"apikey": API_KEY
+	};
 	if (title) {
 		options["t"] = title;
 	}
