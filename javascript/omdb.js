@@ -8,14 +8,29 @@ function fetchRatings(title, season, episode, callback) {
 		callback(cache[cacheKey])
 	} else {
 		$.getJSON(OMDB_URL, requestOptions(title, season, episode), function(response) {
-			ratings = {
+			var ratings = {
 				imdb: response.imdbRating,
-				imdbID: response.imdbID
+				imdbID: response.imdbID,
+				rt: fetchRTRating(response)
 			}
 			cache[cacheKey] = ratings;
 			callback(ratings);
 		});
 	}
+}
+
+function fetchRTRating(response) {
+	var ratingsArray = response["Ratings"];
+	if (ratingsArray) {
+		var rtRating = ratingsArray.find(rtFilter);
+		if (rtRating) {
+			return rtRating["Value"];
+		}
+	}
+}
+
+function rtFilter(rating) {
+	return rating["Source"] == "Rotten Tomatoes";
 }
 
 function requestOptions(title, season, episode) {

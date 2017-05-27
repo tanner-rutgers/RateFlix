@@ -2,19 +2,22 @@
 	color: #666 !important;
 }
 
-.bob-card .imdbRating {
+.bob-card .imdbRating,
+.bob-card .rtRating {
 	margin-right: .333vw !important;
 	display: inline-block !important;
 	line-height: 2 !important;
 	font-weight: 700 !important;
 }
 
-.imdbLogo {
+.imdbLogo, .rtLogo {
 	vertical-align: middle;
 }
 
 .bob-card .imdbRating .imdbLogo,
-.player-status .imdbRating .imdbLogo {
+.bob-card .rtRating .rtLogo,
+.player-status .imdbRating .imdbLogo,
+.player-status .rtRating .rtLogo {
 	margin-bottom: 2px;
 }
 

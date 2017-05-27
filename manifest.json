@@ -2,8 +2,8 @@
   "manifest_version": 2,
 
   "name": "RateFlix",
-  "description": "Show IMDb ratings on Netflix",
-  "version": "1.3",
+  "description": "Show IMDb and Rotten Tomatoes ratings on Netflix",
+  "version": "1.4",
 
   "icons": {
     "16": "images/icon_16.png",
@@ -42,5 +42,5 @@
     "tabs"
   ],
 
-  "web_accessible_resources": ["images/imdb_31x14.png"]
+  "web_accessible_resources": ["images/imdb_31x14.png", "images/rt_logo.png"]
 }
