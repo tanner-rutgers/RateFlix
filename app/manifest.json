@@ -37,7 +37,6 @@
 
   "permissions": [
     "https://*.netflix.com/*",
-    "https://ajax.googleapis.com/",
     "tabs"
   ],
 
