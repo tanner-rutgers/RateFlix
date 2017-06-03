@@ -3,7 +3,7 @@
 
   "name": "RateFlix",
   "description": "Show IMDb and Rotten Tomatoes ratings on Netflix",
-  "version": "1.6",
+  "version": "1.7",
 
   "icons": {
     "16": "images/icon_16.png",
