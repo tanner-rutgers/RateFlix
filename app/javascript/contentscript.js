@@ -2,10 +2,10 @@ chrome.runtime.sendMessage({type: 'showPageAction'});
 
 var lastTitle = "";
 
-function getInfo(titleNode, episodeNode, callback) {
+function getInfo(title, episodeNode, callback) {
 	var info = {};
-	if (titleNode) {
-		info["title"] = titleNode.textContent;
+	if (title) {
+		info["title"] = title;
 	}
 	if (episodeNode) {
 		var text = episodeNode.textContent;
@@ -18,7 +18,7 @@ function getInfo(titleNode, episodeNode, callback) {
 }
 
 function getRatings(title, season, episode, callback) {
-	if (title && title.length && (!lastTitle || lastTitle == title || !title.endsWith(lastTitle))) {
+	if (title.length && !lastTitle || lastTitle == title || !title.endsWith(lastTitle)) {
 		lastTitle = title;
 		fetchRatings(title, season, episode, function(ratings) {
 			callback(ratings);
@@ -26,8 +26,8 @@ function getRatings(title, season, episode, callback) {
 	}
 }
 
-function getInfoAndRatings(titleNode, episodeNode, callback) {
-	getInfo(titleNode, episodeNode, function(info) {
+function getInfoAndRatings(title, episodeNode, callback) {
+	getInfo(title, episodeNode, function(info) {
 		getRatings(info["title"], info["season"], info["episode"], callback);
 	})
 }
@@ -41,16 +41,31 @@ var observerOptions = {
 
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations[mutations.length - 1].target;
-	getInfoAndRatings(node.querySelector(".jawBone > h3"), null, function(ratings) {
-		injectRatings(node.querySelector(".meta"), ratings);
-	});
+	var headerNode = node.querySelector(".jawBone > h3");
+	if (headerNode) {
+		var titleNode = headerNode.querySelector(".title");
+		var title;
+		if (titleNode.querySelector("img")) {
+			title = titleNode.querySelector("img").alt;
+		} else {
+			title = titleNode.textContent;
+		}
+		if (title) {
+			getInfoAndRatings(title, null, function(ratings) {
+				injectRatings(node.querySelector(".meta"), ratings);
+			});
+		}
+	}
 });
 
 var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations[mutations.length - 1].target;
-	getInfoAndRatings(node.querySelector(".bob-title"), null, function(ratings) {
-		injectRatings(node.querySelector(".meta"), ratings);
-	});
+	var titleNode = node.querySelector(".bob-title");
+	if (titleNode && titleNode.textContent) {
+		getInfoAndRatings(titleNode.textContent, null, function(ratings) {
+			injectRatings(node.querySelector(".meta"), ratings);
+		});
+	}
 });
 
 function addTitleObserver(node) {
@@ -91,11 +106,19 @@ var mainObserver = new MutationObserver(function(mutations, observer) {
 });
 
 function addFeaturedInfo(node) {
-	var jawBone = node.querySelector(".jawBoneContainer > .jawBone");
-	if (jawBone) {
-		getInfoAndRatings(jawBone.querySelector(".title"), null, function(ratings) {
-			injectRatings(node.querySelector(".meta"), ratings);
-		});
+	var jawBoneNode = node.querySelector(".jawBoneContainer > .jawBone");
+	if (jawBoneNode) {
+		var titleNode = jawBoneNode.querySelector(".title");
+		if (titleNode) {
+			if (img = titleNode.querySelector("img")) {
+				title = img.alt;
+			} else {
+				title = titleNode.textContent;
+			}
+			getInfoAndRatings(title, null, function(ratings) {
+				injectRatings(node.querySelector(".meta"), ratings);
+			});
+		}
 	}
 }
 
@@ -107,9 +130,9 @@ var playerObserver = new MutationObserver(function(mutations, observer) {
 	}
 });
 
-function addPlayerInfo(playerTitle) {
-	if (playerTitle) {
-		var infoNode = playerTitle.parentNode;
+function addPlayerInfo(playerTitleNode) {
+	if (playerTitleNode) {
+		var infoNode = playerTitleNode.parentNode;
 		var episodeSpan;
 		Array.prototype.some.call(infoNode.getElementsByTagName('span'), function(span) {
 			if (span.classList.length == 0) {
@@ -117,7 +140,7 @@ function addPlayerInfo(playerTitle) {
 				return true;
 			}
 		});
-		getInfoAndRatings(playerTitle, episodeSpan, function(ratings) {
+		getInfoAndRatings(playerTitleNode.textContent, episodeSpan, function(ratings) {
 			injectRatings(infoNode, ratings);
 		});
 	}
@@ -140,9 +163,11 @@ function addEpisodeInfo(episodeListContainer) {
 		lastSeason = season;
 		var episodes = episodeListContainer.querySelectorAll(".episode-list-index");
 		episodes.forEach(function(episode) {
-			getRatings(title, season, episode.textContent, function(ratings) {
-				injectRatings(episode.parentNode, ratings);
-			});
+			if (title) {
+				getRatings(title, season, episode.textContent, function(ratings) {
+					injectRatings(episode.parentNode, ratings);
+				});
+			}
 		});
 	}
 }
