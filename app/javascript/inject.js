@@ -18,7 +18,7 @@ function imdbLinkNode(id) {
 }
 
 function imdbLogoNode(id) {
-	var span = imdbSpan(id);
+	var span = imdbSpan();
 	var link = imdbLinkNode(id);
 	var image = document.createElement("IMG");
 	image.src = chrome.extension.getURL("images/imdb_31x14.png");
@@ -29,6 +29,7 @@ function imdbLogoNode(id) {
 }
 
 function imdbRatingNode(id, rating) {
+	rating = rating.replace("N/A", "");
 	var span = imdbSpan();
 	var link = imdbLinkNode(id);
 	var rating = document.createTextNode(rating);
@@ -53,15 +54,27 @@ function rtRatingNode(rating) {
 	return span;
 }
 
+function should_append_imdb(rating, id) {
+	if ((rating && rating != "N/A") || id) {
+		return true;
+	}
+	return false;
+}
+
 function injectRatings(node, ratings) {
 	var imdbRating = ratings["imdb"];
 	var imdbId = ratings["imdbID"];
 	var rtRating = ratings["rt"];
 
 	if (node) {
-		if (imdbRating && !node.querySelector(".imdbRating")) {
-			node.appendChild(imdbLogoNode(imdbId));
-			node.appendChild(imdbRatingNode(imdbId, imdbRating));
+		if (!node.querySelector(".imdbRating")) {
+			if (should_append_imdb(imdbRating, imdbId)) {
+				node.appendChild(imdbLogoNode(imdbId));
+				node.appendChild(imdbRatingNode(imdbId, imdbRating));
+			} else {
+				node.appendChild(imdbSpan());
+				node.appendChild(imdbSpan());
+			}
 		}
 		if (rtRating && !node.querySelector(".rtRating")) {
 			node.appendChild(rtLogoNode());
