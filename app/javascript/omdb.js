@@ -1,5 +1,5 @@
 var OMDB_URL = 'https://www.omdbapi.com/?';
-var API_KEY = "1e0ce2f6";
+var API_KEY = "placeholder";
 
 var cache = {};
 
