@@ -2,10 +2,13 @@ chrome.runtime.sendMessage({type: 'showPageAction'});
 
 var lastTitle = "";
 
-function getInfo(title, episodeNode, callback) {
+function getInfo(title, year, episodeNode, callback) {
 	var info = {};
 	if (title) {
 		info["title"] = title;
+	}
+	if (year) {
+		info["year"] = year;
 	}
 	if (episodeNode) {
 		var text = episodeNode.textContent;
@@ -17,18 +20,18 @@ function getInfo(title, episodeNode, callback) {
 	callback(info);
 }
 
-function getRatings(title, season, episode, callback) {
-	if (title.length && !lastTitle || lastTitle == title || !title.endsWith(lastTitle)) {
-		lastTitle = title;
-		fetchRatings(title, season, episode, function(ratings) {
+function getRatings(info, callback) {
+	if (info["title"] && !lastTitle || info["title"] == lastTitle || !info["title"].endsWith(lastTitle)) {
+		lastTitle = info["title"];
+		fetchRatings(info, function(ratings) {
 			callback(ratings);
 		});
 	}
 }
 
-function getInfoAndRatings(title, episodeNode, callback) {
-	getInfo(title, episodeNode, function(info) {
-		getRatings(info["title"], info["season"], info["episode"], callback);
+function getInfoAndRatings(title, year, episodeNode, callback) {
+	getInfo(title, year, episodeNode, function(info) {
+		getRatings(info, callback);
 	})
 }
 
@@ -41,19 +44,32 @@ var observerOptions = {
 
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations[mutations.length - 1].target;
-	var headerNode = node.querySelector(".jawBone > h3");
-	if (headerNode) {
-		var titleNode = headerNode.querySelector(".title");
-		var title;
-		if (titleNode.querySelector("img")) {
-			title = titleNode.querySelector("img").alt;
-		} else {
-			title = titleNode.textContent;
-		}
-		if (title) {
-			getInfoAndRatings(title, null, function(ratings) {
-				injectRatings(node.querySelector(".meta"), ratings);
-			});
+	var jawBoneNode = node.querySelector(".jawBone");
+	if (jawBoneNode) {
+		var headerNode = jawBoneNode.querySelector("h3");
+		if (headerNode) {
+			var titleNode = headerNode.querySelector(".title");
+			var title;
+			if (titleNode.querySelector("img")) {
+				title = titleNode.querySelector("img").alt;
+			} else {
+				title = titleNode.textContent;
+			}
+
+			var year = "";
+			var yearNode = jawBoneNode.querySelector(".year");
+			if (yearNode) {
+				var durationNode = jawBoneNode.querySelector(".duration");
+				if (!durationNode || !/Seasons|Series/.test(durationNode.textContent)) {
+					year = yearNode.textContent;
+				}
+			}
+
+			if (title) {
+				getInfoAndRatings(title, year, null, function(ratings) {
+					injectRatings(node.querySelector(".meta"), ratings);
+				});
+			}
 		}
 	}
 });
@@ -62,7 +78,15 @@ var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations[mutations.length - 1].target;
 	var titleNode = node.querySelector(".bob-title");
 	if (titleNode && titleNode.textContent) {
-		getInfoAndRatings(titleNode.textContent, null, function(ratings) {
+		var year = "";
+		var yearNode = node.querySelector(".meta > .year");
+		if (yearNode) {
+			var durationNode = node.querySelector(".meta > .duration");
+			if (!durationNode || !/Seasons|Series/.test(durationNode.textContent)) {
+				year = yearNode.textContent;
+			}
+		}
+		getInfoAndRatings(titleNode.textContent, year, null, function(ratings) {
 			injectRatings(node.querySelector(".meta"), ratings);
 		});
 	}
@@ -115,7 +139,15 @@ function addFeaturedInfo(node) {
 			} else {
 				title = titleNode.textContent;
 			}
-			getInfoAndRatings(title, null, function(ratings) {
+			var year = "";
+			var yearNode = jawBoneNode.querySelector(".year");
+			if (yearNode) {
+				var durationNode = jawBoneNode.querySelector(".duration");
+				if (!durationNode || !/Seasons|Series/.test(durationNode.textContent)) {
+					year = yearNode.textContent;
+				}
+			}
+			getInfoAndRatings(title, year, null, function(ratings) {
 				injectRatings(node.querySelector(".meta"), ratings);
 			});
 		}
@@ -140,7 +172,11 @@ function addPlayerInfo(playerTitleNode) {
 				return true;
 			}
 		});
-		getInfoAndRatings(playerTitleNode.textContent, episodeSpan, function(ratings) {
+		var year;
+		if (!episodeSpan) {
+			year = getPlayerYear();
+		}
+		getInfoAndRatings(playerTitleNode.textContent, year, episodeSpan, function(ratings) {
 			injectRatings(infoNode, ratings);
 		});
 	}
@@ -162,10 +198,11 @@ function addEpisodeInfo(episodeListContainer) {
 	if (season && season != lastSeason) {
 		lastSeason = season;
 		var episodes = episodeListContainer.querySelectorAll(".episode-list-index");
-		episodes.forEach(function(episode) {
+		episodes.forEach(function(episodeNode) {
 			if (title) {
-				getRatings(title, season, episode.textContent, function(ratings) {
-					injectRatings(episode.parentNode, ratings);
+				var info = { title: title, season: season, episode: episodeNode.textContent };
+				getRatings(info, function(ratings) {
+					injectRatings(episodeNode.parentNode, ratings);
 				});
 			}
 		});
@@ -179,6 +216,21 @@ function extractSeasonNumber(text) {
 		return match[2];
 	}
 	return null;
+}
+
+function getPlayerYear() {
+	var year;
+	var pauseContainer = document.querySelector(".playback-longpause-container");
+	if (pauseContainer) {
+		var metaNode = pauseContainer.querySelector(".content > h3");
+		Array.prototype.some.call(metaNode.getElementsByTagName('span'), function(span) {
+			if (/^\d{4}$/.test(span.textContent)) {
+				year = span.textContent;
+				return true;
+			}
+		});
+	}
+	return year;
 }
 
 if (mainView = document.querySelector(".mainView")) {
