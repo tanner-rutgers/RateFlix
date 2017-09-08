@@ -3,12 +3,12 @@ var API_KEY = "placeholder";
 
 var cache = {};
 
-function fetchRatings(info, callback) {
-	var cacheKey = JSON.stringify(info);
+function fetchRatings(title, season, episode, callback) {
+	var cacheKey = hashKey(title, season, episode);
 	if (cache[cacheKey]) {
 		callback(cache[cacheKey])
 	} else {
-		$.getJSON(OMDB_URL, requestOptions(info), function(response) {
+		$.getJSON(OMDB_URL, requestOptions(title, season, episode), function(response) {
 			var ratings = {
 				imdb: response.imdbRating,
 				imdbID: response.imdbID,
@@ -34,21 +34,22 @@ function rtFilter(rating) {
 	return rating["Source"] == "Rotten Tomatoes";
 }
 
-function requestOptions(info) {
+function requestOptions(title, season, episode) {
 	var options = {
 		"apikey": API_KEY
 	};
-	if (info["title"]) {
-		options["t"] = info["title"];
+	if (title) {
+		options["t"] = title;
 	}
-	if (info["year"]) {
-		options["y"] = info["year"];
+	if (season) {
+		options["Season"] = season;
 	}
-	if (info["season"]) {
-		options["Season"] = info["season"];
-	}
-	if (info["episode"]) {
-		options["Episode"] = info["episode"];
+	if (episode) {
+		options["Episode"] = episode;
 	}
 	return options;
+}
+
+function hashKey(title, season, episode) {
+	return "Title:" + title + "Season:" + season + "Episode:" + episode;
 }
