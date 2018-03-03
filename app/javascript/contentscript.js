@@ -1,37 +1,5 @@
 chrome.runtime.sendMessage({type: 'showPageAction'});
 
-var lastTitle = "";
-
-function getInfo(title, episodeNode, callback) {
-	var info = {};
-	if (title) {
-		info["title"] = title;
-	}
-	if (episodeNode) {
-		var text = episodeNode.textContent;
-		var regex = /\D*(\d+)\D*(\d+)/
-		var match = regex.exec(text);
-		info["season"] = match[1];
-		info["episode"] = match[2];
-	}
-	callback(info);
-}
-
-function getRatings(title, season, episode, callback) {
-	if (title.length && !lastTitle || lastTitle == title || !title.endsWith(lastTitle)) {
-		lastTitle = title;
-		fetchRatings(title, season, episode, function(ratings) {
-			callback(ratings);
-		});
-	}
-}
-
-function getInfoAndRatings(title, episodeNode, callback) {
-	getInfo(title, episodeNode, function(info) {
-		getRatings(info["title"], info["season"], info["episode"], callback);
-	})
-}
-
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var observerOptions = {
@@ -44,14 +12,9 @@ var jawBoneContentObserver = new MutationObserver(function(mutations, observer) 
 	var headerNode = node.querySelector(".jawBone > h3");
 	if (headerNode) {
 		var titleNode = headerNode.querySelector(".title");
-		var title;
-		if (titleNode.querySelector("img")) {
-			title = titleNode.querySelector("img").alt;
-		} else {
-			title = titleNode.textContent;
-		}
+		var title = titleNode.querySelector("img") ? titleNode.querySelector("img").alt : titleNode.textContent;
 		if (title) {
-			getInfoAndRatings(title, null, function(ratings) {
+			getRatings(title, null, null, function(ratings) {
 				injectRatings(node.querySelector(".meta"), ratings);
 			});
 		}
@@ -62,7 +25,7 @@ var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations[mutations.length - 1].target;
 	var titleNode = node.querySelector(".bob-title");
 	if (titleNode && titleNode.textContent) {
-		getInfoAndRatings(titleNode.textContent, null, function(ratings) {
+		getRatings(titleNode.textContent, null, null, function(ratings) {
 			injectRatings(node.querySelector(".meta"), ratings);
 		});
 	}
@@ -101,11 +64,11 @@ var mainObserver = new MutationObserver(function(mutations, observer) {
 		observer.disconnect();
 		rowObserver.observe(mainView, observerOptions);
 		addTitleObserver(mainView);
-		addFeaturedInfo(mainView);
+		addFeaturedRatings(mainView);
 	}
 });
 
-function addFeaturedInfo(node) {
+function addFeaturedRatings(node) {
 	var jawBoneNode = node.querySelector(".jawBoneContainer > .jawBone");
 	if (jawBoneNode) {
 		var titleNode = jawBoneNode.querySelector(".title");
@@ -115,7 +78,7 @@ function addFeaturedInfo(node) {
 			} else {
 				title = titleNode.textContent;
 			}
-			getInfoAndRatings(title, null, function(ratings) {
+			getRatings(title, null, null, function(ratings) {
 				injectRatings(node.querySelector(".meta"), ratings);
 			});
 		}
@@ -123,27 +86,25 @@ function addFeaturedInfo(node) {
 }
 
 var playerObserver = new MutationObserver(function(mutations, observer) {
-	var playerTitle = document.querySelector(".player-status-main-title");
-	if (playerTitle && playerTitle.textContent && playerTitle.textContent.length > 0) {
+	var playerTitleNode = document.querySelector(".video-title > div > h4");
+	if (playerTitleNode && playerTitleNode.textContent && playerTitleNode.textContent.length > 0) {
 		observer.disconnect();
-		addPlayerInfo(playerTitle);
+		addPlayerRatings(playerTitleNode);
 	}
 });
 
-function addPlayerInfo(playerTitleNode) {
-	if (playerTitleNode) {
-		var infoNode = playerTitleNode.parentNode;
-		var episodeSpan;
-		Array.prototype.some.call(infoNode.getElementsByTagName('span'), function(span) {
-			if (span.classList.length == 0) {
-				episodeSpan = span;
-				return true;
-			}
-		});
-		getInfoAndRatings(playerTitleNode.textContent, episodeSpan, function(ratings) {
-			injectRatings(infoNode, ratings);
-		});
-	}
+function addPlayerRatings(playerTitleNode) {
+	var infoNode = playerTitleNode.parentNode;
+	var episodeInfo = {};
+	Array.prototype.some.call(infoNode.getElementsByTagName('span'), function(span) {
+		if (span.classList.length == 0) {
+			episodeInfo = extractEpisodeInfo(span.textContent);
+			return true;
+		}
+	});
+	getRatings(playerTitleNode.textContent, episodeInfo["season"], episodeInfo["episode"], function(ratings) {
+		injectRatings(infoNode, ratings);
+	});
 }
 
 var lastSeason = "";
@@ -151,11 +112,11 @@ var lastSeason = "";
 var episodeContainerObserver = new MutationObserver(function(mutations, observer) {
 	var episodeListContainer = document.querySelector(".episode-list-container");
 	if (episodeListContainer) {
-		addEpisodeInfo(episodeListContainer);
+		addEpisodeRatings(episodeListContainer);
 	}
 });
 
-function addEpisodeInfo(episodeListContainer) {
+function addEpisodeRatings(episodeListContainer) {
 	var title = document.querySelector(".player-status-main-title").textContent;
 	var seasonNode = episodeListContainer.querySelector(".seasons-title");
 	var season = extractSeasonNumber(seasonNode.textContent);
@@ -172,23 +133,13 @@ function addEpisodeInfo(episodeListContainer) {
 	}
 }
 
-function extractSeasonNumber(text) {
-	var regex = /(S|s)eason (\d+)/
-	var match = regex.exec(text);
-	if (match) {
-		return match[2];
-	}
-	return null;
-}
-
 if (mainView = document.querySelector(".mainView")) {
 	rowObserver.observe(mainView, observerOptions);
 	addTitleObserver(mainView);
-	addFeaturedInfo(mainView);
-} else if (playerTitle = document.querySelector(".player-status-main-title")) {
-	console.log("Found player title");
-	if (playerTitle && playerTitle.textContent && playerTitle.textContent.length > 0) {
-		addPlayerInfo(playerTitle);
+	addFeaturedRatings(mainView);
+} else if (playerTitleNode = document.querySelector(".video-title > div > h4")) {
+	if (playerTitleNode.textContent && playerTitleNode.textContent.length > 0) {
+		addPlayerRatings(playerTitleNode);
 	}
 } else {
 	mainObserver.observe(document, observerOptions);
