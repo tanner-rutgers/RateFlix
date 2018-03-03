@@ -1,13 +1,10 @@
-.imdbRating a {
-	color: #666 !important;
-}
-
 .bob-card .imdbRating,
 .bob-card .rtRating {
 	margin-right: .333vw !important;
 	display: inline-block !important;
 	line-height: 2 !important;
 	font-weight: 700 !important;
+	margin-bottom: .3vw;
 }
 
 .imdbLogo, .rtLogo {

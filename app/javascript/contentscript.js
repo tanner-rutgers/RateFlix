@@ -44,6 +44,12 @@ function addTitleObserver(node) {
 			node.setAttribute("observed", "true");
 		};
 	});
+	node.querySelectorAll(".tall-panel-bob-container > span").forEach(function(node) {
+		if (!node.hasAttribute("observed")) {
+			titleCardObserver.observe(node, observerOptions);
+			node.setAttribute("observed", "true");
+		};
+	});
 }
 
 var rowObserver = new MutationObserver(function(mutations, observer) {
