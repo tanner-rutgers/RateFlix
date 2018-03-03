@@ -1,20 +1,22 @@
 var OMDB_URL = 'https://www.omdbapi.com/?';
 var API_KEY = "placeholder";
 
-var cache = {};
+var fetchedCache = {};
+var fetchingCache = {};
 
 function fetchRatings(title, season, episode, callback) {
 	var cacheKey = hashKey(title, season, episode);
-	if (cache[cacheKey]) {
-		callback(cache[cacheKey])
-	} else {
+	if (fetchedCache[cacheKey]) {
+		callback(fetchedCache[cacheKey])
+	} else if (!fetchingCache[cacheKey]) {
+		fetchingCache[cacheKey] = true;
 		$.getJSON(OMDB_URL, requestOptions(title, season, episode), function(response) {
 			var ratings = {
 				imdb: response.imdbRating,
 				imdbID: response.imdbID,
 				rt: fetchRTRating(response)
 			}
-			cache[cacheKey] = ratings;
+			fetchedCache[cacheKey] = ratings;
 			callback(ratings);
 		});
 	}
