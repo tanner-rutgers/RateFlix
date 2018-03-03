@@ -107,22 +107,19 @@ function addPlayerRatings(playerTitleNode) {
 	});
 }
 
-var lastSeason = "";
-
 var episodeContainerObserver = new MutationObserver(function(mutations, observer) {
-	var episodeListContainer = document.querySelector(".episode-list-container");
+	var episodeListContainer = document.querySelector(".episodes-pane");
 	if (episodeListContainer) {
 		addEpisodeRatings(episodeListContainer);
 	}
 });
 
 function addEpisodeRatings(episodeListContainer) {
-	var title = document.querySelector(".player-status-main-title").textContent;
-	var seasonNode = episodeListContainer.querySelector(".seasons-title");
+	var title = document.querySelector(".video-title > div > h4").textContent;
+	var seasonNode = episodeListContainer.querySelector(".header-title");
 	var season = extractSeasonNumber(seasonNode.textContent);
-	if (season && season != lastSeason) {
-		lastSeason = season;
-		var episodes = episodeListContainer.querySelectorAll(".episode-list-index");
+	if (season) {
+		var episodes = episodeListContainer.querySelectorAll(".episode-row > div > span.number");
 		episodes.forEach(function(episode) {
 			if (title) {
 				getRatings(title, season, episode.textContent, function(ratings) {

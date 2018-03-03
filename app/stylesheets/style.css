@@ -16,8 +16,8 @@
 
 .bob-card .imdbRating .imdbLogo,
 .bob-card .rtRating .rtLogo,
-.player-status .imdbRating .imdbLogo,
-.player-status .rtRating .rtLogo {
+.video-title .imdbRating .imdbLogo,
+.video-title .rtRating .rtLogo {
 	margin-bottom: 2px;
 }
 
@@ -25,11 +25,18 @@
 	color: #fff !important;
 }
 
-.player-status .imdbRating a {
+.video-title .imdbRating a {
 	color: #adadad !important;
 }
 
-.episode-list-item-header .imdbRating {
-	margin-left: 8px;
+.episode-row .imdbRating {
+	margin-right: 10px;
 	min-width: 35px;
+	font-size: .9em !important;
+    font-weight: 400 !important;
+    color: #fff !important;
+}
+
+.episode-row .imdbRating a {
+    color: #fff !important;
 }
