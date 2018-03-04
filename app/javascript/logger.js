@@ -1,4 +1,4 @@
-LOG = true;
+LOG = false;
 
 function log(message) {
   if (LOG) {

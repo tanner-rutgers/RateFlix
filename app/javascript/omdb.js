@@ -21,7 +21,8 @@ function fetchRatings(title, season, episode, year, callback) {
 			var ratings = {
 				imdb: response.imdbRating,
 				imdbID: response.imdbID,
-				rt: fetchRTRating(response)
+				rt: fetchRTRating(response),
+				metacritic: response.Metascore
 			}
 			fetchedCache[cacheKey] = ratings;
 			callback(ratings);
