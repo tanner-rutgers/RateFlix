@@ -20,6 +20,7 @@ function fetchRatings(title, season, episode, year, callback) {
 			success: function(response) {
 				if (!response.imdbRating && year) {
 					log("Failed to fetch ratings for " + argsString);
+					delete fetchingCache[cacheKey];
 					return fetchRatings(title, season, episode, null, callback);
 				}
 				var ratings = {
@@ -35,6 +36,7 @@ function fetchRatings(title, season, episode, year, callback) {
 			error: function(jqXHR, status, errorThrown) {
 				if (status == "timeout") {
 					log("Failed to fetch ratings for " + argsString + " due to timeout");
+					delete fetchingCache[cacheKey];
 					fetchRatings(title, season, episode, null, callback);
 				}
 			},
