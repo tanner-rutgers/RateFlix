@@ -1,3 +1,9 @@
+.imdbRating a,
+.rtRating a,
+.metacriticRating a {
+	color: #fff;
+}
+
 .bob-card .imdbRating,
 .bob-card .rtRating,
 .bob-card .metacriticRating {
@@ -19,10 +25,6 @@
 .video-title .rtRating .rtLogo,
 .video-title .metacriticRating .metacriticLogo {
 	margin-bottom: 2px;
-}
-
-.bob-card .imdbRating a {
-	color: #fff !important;
 }
 
 .video-title .imdbRating a {

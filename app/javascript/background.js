@@ -10,3 +10,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 		chrome.pageAction.show(sender.tab.id);
 	}
 });
+
+chrome.runtime.onInstalled.addListener(function (object) {
+  chrome.tabs.create({url: "https://www.patreon.com/posts/17355630"})
+})

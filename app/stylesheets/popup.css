@@ -1,0 +1,23 @@
+body {
+	background: #141414;
+	min-width: 400px;
+	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+	margin-bottom: 16px;
+}
+
+h1 {
+	color: #e50914;
+}
+
+h3,
+p {
+	color: #e5e5e5;
+}
+
+a,
+a:link,
+a:visited {
+	color: #F5DE50;
+	text-decoration: none;
+	outline: none;
+}
