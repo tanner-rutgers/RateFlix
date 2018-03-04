@@ -92,24 +92,23 @@ function addFeaturedRatings(node) {
 }
 
 var playerObserver = new MutationObserver(function(mutations, observer) {
-	var playerTitleNode = document.querySelector(".video-title > div > h4");
-	if (playerTitleNode && playerTitleNode.textContent && playerTitleNode.textContent.length > 0) {
+	if (titleContainerNode = document.querySelector(".video-title")) {
 		observer.disconnect();
-		addPlayerRatings(playerTitleNode);
+		addPlayerRatings(titleContainerNode);
 	}
 });
 
-function addPlayerRatings(playerTitleNode) {
-	var infoNode = playerTitleNode.parentNode;
+function addPlayerRatings(titleContainerNode) {
+	var titleNode = titleContainerNode.getElementsByTagName('h4')[0];
 	var episodeInfo = {};
-	Array.prototype.some.call(infoNode.getElementsByTagName('span'), function(span) {
+	Array.prototype.some.call(titleContainerNode.getElementsByTagName('span'), function(span) {
 		if (span.classList.length == 0) {
 			episodeInfo = extractEpisodeInfo(span.textContent);
 			return true;
 		}
 	});
-	getRatings(playerTitleNode.textContent, episodeInfo["season"], episodeInfo["episode"], null, function(ratings) {
-		injectRatings(infoNode, ratings);
+	getRatings(titleNode.textContent, episodeInfo["season"], episodeInfo["episode"], null, function(ratings) {
+		injectRatings(titleNode.parentNode, ratings);
 	});
 }
 
@@ -121,7 +120,7 @@ var episodeContainerObserver = new MutationObserver(function(mutations, observer
 });
 
 function addEpisodeRatings(episodeListContainer) {
-	var title = document.querySelector(".video-title > div > h4").textContent;
+	var title = document.querySelector(".video-title").getElementsByTagName('h4')[0].textContent;
 	var seasonNode = episodeListContainer.querySelector(".header-title");
 	var season = extractSeasonNumber(seasonNode.textContent);
 	if (season) {
@@ -140,10 +139,8 @@ if (mainView = document.querySelector(".mainView")) {
 	rowObserver.observe(mainView, observerOptions);
 	addTitleObserver(mainView);
 	addFeaturedRatings(mainView);
-} else if (playerTitleNode = document.querySelector(".video-title > div > h4")) {
-	if (playerTitleNode.textContent && playerTitleNode.textContent.length > 0) {
-		addPlayerRatings(playerTitleNode);
-	}
+} else if (titleContainerNode = document.querySelector(".video-title")) {
+	addPlayerRatings(titleContainerNode);
 } else {
 	mainObserver.observe(document, observerOptions);
 	playerObserver.observe(document, observerOptions);
