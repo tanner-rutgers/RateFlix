@@ -14,7 +14,7 @@ var jawBoneContentObserver = new MutationObserver(function(mutations, observer) 
 		var titleNode = headerNode.querySelector(".title");
 		var title = titleNode.querySelector("img") ? titleNode.querySelector("img").alt : titleNode.textContent;
 		if (title) {
-			getRatings(title, null, null, function(ratings) {
+			getRatings(title, null, null, extractYear(node), function(ratings) {
 				injectRatings(node.querySelector(".meta"), ratings);
 			});
 		}
@@ -24,8 +24,8 @@ var jawBoneContentObserver = new MutationObserver(function(mutations, observer) 
 var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations[mutations.length - 1].target;
 	var titleNode = node.querySelector(".bob-title");
-	if (titleNode && titleNode.textContent) {
-		getRatings(titleNode.textContent, null, null, function(ratings) {
+	if (titleNode && (title = titleNode.textContent)) {
+		getRatings(title, null, null, extractYear(node), function(ratings) {
 			injectRatings(node.querySelector(".meta"), ratings);
 		});
 	}
@@ -84,7 +84,7 @@ function addFeaturedRatings(node) {
 			} else {
 				title = titleNode.textContent;
 			}
-			getRatings(title, null, null, function(ratings) {
+			getRatings(title, null, null, extractYear(jawBoneNode), function(ratings) {
 				injectRatings(node.querySelector(".meta"), ratings);
 			});
 		}
@@ -108,7 +108,7 @@ function addPlayerRatings(playerTitleNode) {
 			return true;
 		}
 	});
-	getRatings(playerTitleNode.textContent, episodeInfo["season"], episodeInfo["episode"], function(ratings) {
+	getRatings(playerTitleNode.textContent, episodeInfo["season"], episodeInfo["episode"], null, function(ratings) {
 		injectRatings(infoNode, ratings);
 	});
 }
@@ -128,7 +128,7 @@ function addEpisodeRatings(episodeListContainer) {
 		var episodes = episodeListContainer.querySelectorAll(".episode-row > div > span.number");
 		episodes.forEach(function(episode) {
 			if (title) {
-				getRatings(title, season, episode.textContent, function(ratings) {
+				getRatings(title, season, episode.textContent, null, function(ratings) {
 					injectRatings(episode.parentNode, ratings);
 				});
 			}
