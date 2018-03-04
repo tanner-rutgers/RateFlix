@@ -9,23 +9,36 @@ function fetchRatings(title, season, episode, year, callback) {
 	var cacheKey = hashKey(title, season, episode, year);
 	if (fetchedCache[cacheKey]) {
 		log("Cached ratings for " + argsString);
-		callback(fetchedCache[cacheKey])
+		callback(fetchedCache[cacheKey]);
 	} else if (!fetchingCache[cacheKey]) {
 		log("Fetching ratings for " + argsString);
 		fetchingCache[cacheKey] = true;
-		$.getJSON(OMDB_URL, requestOptions(title, season, episode, year), function(response) {
-			if (!response.imdbRating && year) {
-				log("Failed to fetch ratings for " + argsString)
-				fetchRatings(title, season, episode, null, callback);
-			}
-			var ratings = {
-				imdb: response.imdbRating,
-				imdbID: response.imdbID,
-				rt: fetchRTRating(response),
-				metacritic: response.Metascore
-			}
-			fetchedCache[cacheKey] = ratings;
-			callback(ratings);
+		$.ajax({
+			url: OMDB_URL,
+			dataType: 'json',
+			data: requestOptions(title, season, episode, year),
+			success: function(response) {
+				if (!response.imdbRating && year) {
+					log("Failed to fetch ratings for " + argsString);
+					return fetchRatings(title, season, episode, null, callback);
+				}
+				var ratings = {
+					imdb: response.imdbRating,
+					imdbID: response.imdbID,
+					rt: fetchRTRating(response),
+					metacritic: response.Metascore
+				}
+				log("Fetched ratings for " + argsString + ": " + JSON.stringify(ratings));
+				fetchedCache[cacheKey] = ratings;
+				callback(ratings);
+			},
+			error: function(jqXHR, status, errorThrown) {
+				if (status == "timeout") {
+					log("Failed to fetch ratings for " + argsString + " due to timeout");
+					fetchRatings(title, season, episode, null, callback);
+				}
+			},
+			timeout: 2000
 		});
 	}
 }
