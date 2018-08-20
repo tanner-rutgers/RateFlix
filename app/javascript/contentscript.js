@@ -8,46 +8,52 @@ var observerOptions = {
 }
 
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {
-	var node = mutations[mutations.length - 1].target;
-	var headerNode = node.querySelector(".jawBone > h3");
-	if (headerNode) {
-		var titleNode = headerNode.querySelector(".title");
-		var title = titleNode.querySelector("img") ? titleNode.querySelector("img").alt : titleNode.textContent;
-		if (title) {
-			getRatings(title, null, null, extractYear(node), function(ratings) {
-				injectRatings(node.querySelector(".meta"), ratings);
-			});
+	var node = mutations.find(function(mutation) { return mutation.target.hasAttribute("observed") });
+	if (node) {
+		node = node.target;
+		var headerNode = node.querySelector(".jawBone > h3");
+		if (headerNode) {
+			var titleNode = headerNode.querySelector(".title");
+			var title = titleNode.querySelector("img") ? titleNode.querySelector("img").alt : titleNode.textContent;
+			if (title) {
+				getRatings(title, null, null, extractYear(node), function(ratings) {
+					injectRatings(node.querySelector(".meta"), ratings);
+				});
+			}
 		}
 	}
 });
 
 var titleCardObserver = new MutationObserver(function(mutations, observer) {
-	var node = mutations[mutations.length - 1].target;
-	var titleNode = node.querySelector(".bob-title");
-	if (titleNode && (title = titleNode.textContent)) {
-		getRatings(title, null, null, extractYear(node), function(ratings) {
-			injectRatings(node.querySelector(".meta") || node.querySelector('.bob-title'), ratings);
-		});
+	var node = mutations.find(function(mutation) { return mutation.target.hasAttribute("observed") });
+	if (node) {
+		node = node.target;
+		var titleNode = node.querySelector(".bob-title");
+		if (titleNode && (title = titleNode.textContent)) {
+			getRatings(title, null, null, extractYear(node), function(ratings) {
+				injectRatings(node.querySelector(".meta") || titleNode, ratings);
+			});
+		}
 	}
 });
 
 function addTitleObserver(node) {
 	node.querySelectorAll(".jawBoneContent").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
-			jawBoneContentObserver.observe(node, observerOptions);
 			node.setAttribute("observed", "true");
+			jawBoneContentObserver.observe(node, observerOptions);
 		};
 	});
 	node.querySelectorAll(".title-card-container > div > span").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
-			titleCardObserver.observe(node, observerOptions);
 			node.setAttribute("observed", "true");
+			titleCardObserver.observe(node, observerOptions);
 		};
 	});
-	node.querySelectorAll(".tall-panel-bob-container > span").forEach(function(node) {
+	node.querySelectorAll(".bob-container-tall-panel > span").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
-			titleCardObserver.observe(node, observerOptions);
 			node.setAttribute("observed", "true");
+			titleCardObserver.observe(node, observerOptions);
 		};
 	});
 }
