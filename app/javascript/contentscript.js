@@ -31,7 +31,7 @@ var titleCardObserver = new MutationObserver(function(mutations, observer) {
 		var titleNode = node.querySelector(".bob-title");
 		if (titleNode && (title = titleNode.textContent)) {
 			getRatings(title, null, null, extractYear(node), function(ratings) {
-				injectRatings(node.querySelector(".meta"), ratings);
+				injectRatings(node.querySelector(".meta") || titleNode, ratings);
 			});
 		}
 	}

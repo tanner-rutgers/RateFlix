@@ -4,6 +4,10 @@
 	color: #fff;
 }
 
+.bob-card .bob-title .imdbRating{
+	margin-left: .333vw !important;
+}
+
 .bob-card .imdbRating,
 .bob-card .rtRating,
 .bob-card .metacriticRating {
