@@ -16,11 +16,27 @@ function metacriticSpan() {
 	return span;
 }
 
+// NEW FUNCTION
+function expirationSpan() {
+	var span = document.createElement("SPAN");
+	span.className = "expiration";
+	return span;
+}
+
 function imdbLinkNode(id) {
 	var link = document.createElement("A");
 	link.href = "https://www.imdb.com/title/" + id;
 	link.target = "_blank";
 	return link;
+}
+
+// NEW FUNCTION
+function expirationNode(id) {
+	var span = expirationSpan();
+	var image = document.createElement("IMG");
+	image.src = chrome.extension.getURL("images/expiration_logo.png");
+	image.className = "expLogo";
+	return span;
 }
 
 function imdbLogoNode(id) {

@@ -1,5 +1,5 @@
-var OMDB_URL = 'https://private.omdbapi.com/?';
-var API_KEY = "placeholder";
+var OMDB_URL = 'http://www.omdbapi.com/?';
+var API_KEY = "c81c5662";
 var TIMEOUT = 3000;
 
 var fetchedCache = {};
