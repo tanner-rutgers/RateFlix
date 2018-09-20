@@ -11,6 +11,3 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 	}
 });
 
-chrome.runtime.onInstalled.addListener(function (object) {
-  chrome.tabs.create({url: "https://www.patreon.com/posts/20865557"})
-})
