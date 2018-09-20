@@ -1,5 +1,5 @@
 # netflix-features
-a chrome extension that adds extra functionality to netflix!
+a chrome extension that adds extra functionality to netflix!!
 
 #### Features in mind:
 - [x] Add reviews (by [tanner-rutgers](https://github.com/tanner-rutgers/RateFlix))
