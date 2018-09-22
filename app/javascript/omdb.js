@@ -65,7 +65,7 @@ function requestOptions(title, season, episode, year) {
 		"apikey": API_KEY
 	};
 	if (title) {
-		options["t"] = title;
+		options["t"] = title.replace(/’/g, "'");
 	}
 	if (season) {
 		options["Season"] = season;
