@@ -118,11 +118,18 @@ function injectRatings(node, ratings) {
 				node.appendChild(imdbSpan());
 			}
 		}
-		if ((rtRating || rtUrl) && !node.querySelector(".rtRating")) {
-			node.appendChild(rtLogoNode(rtUrl));
-			if (rtRating) {
-				node.appendChild(rtRatingNode(rtUrl, rtRating))
-			};
+		if ((rtRating || rtUrl)) {
+			if(!node.querySelector(".rtRating")) {
+				node.appendChild(rtLogoNode(rtUrl));
+				if (rtRating) {
+					node.appendChild(rtRatingNode(rtUrl, rtRating));
+				};
+			} else if (!node.querySelector(".rtRating a")) {
+				node.replaceChild(rtLogoNode(rtUrl), node.querySelectorAll('.rtRating')[0]);
+				if (rtRating) {
+					node.replaceChild(rtRatingNode(rtUrl, rtRating), node.querySelectorAll('.rtRating')[1]);
+				};
+			}
 		}
 		if (metascore && metascore != "N/A" && !node.querySelector(".metacriticRating")) {
 			node.appendChild(metacriticLogoNode());

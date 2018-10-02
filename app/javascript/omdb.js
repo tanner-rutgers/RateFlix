@@ -33,6 +33,7 @@ function fetchRatings(title, season, episode, year, callback) {
 				};
 				log("Fetched OMDB ratings for " + argsString + ": " + JSON.stringify(ratings));
 				log("Fetching RT ratings for " + argsString);
+				callback(ratings);
 				$.ajax({
 					url: RT_URL,
 					type: "GET",
