@@ -38,25 +38,44 @@ function imdbRatingNode(id, rating) {
 	rating = rating.replace("N/A", "");
 	var span = imdbSpan();
 	var link = imdbLinkNode(id);
-	var rating = document.createTextNode(rating);
-	link.appendChild(rating);
+	var ratingNode = document.createTextNode(rating);
+	link.appendChild(ratingNode);
 	span.appendChild(link);
 	return span;
 }
 
-function rtLogoNode() {
+function rtLinkNode(url) {
+	var link = document.createElement("A");
+	link.href = "https://www.rottentomatoes.com" + url;
+	link.target = "_blank";
+	return link;
+}
+
+function rtLogoNode(url) {
 	var span = rtSpan();
 	var image = document.createElement("IMG");
 	image.src = chrome.extension.getURL("images/rt_logo.png");
 	image.className = "rtLogo";
-	span.appendChild(image);
+	if (url) {
+		var link = rtLinkNode(url);
+		link.appendChild(image);
+		span.appendChild(link);
+	}	else {
+		span.appendChild(image);
+	}
 	return span;
 }
 
-function rtRatingNode(rating) {
+function rtRatingNode(url, rating) {
 	var span = rtSpan();
-	var rating = document.createTextNode(rating);
-	span.appendChild(rating);
+	var ratingNode = document.createTextNode(rating);
+	if (url) {
+		var link = rtLinkNode(url);
+		link.appendChild(ratingNode);
+		span.appendChild(link);
+	}	else {
+		span.appendChild(ratingNode);
+	}
 	return span;
 }
 
@@ -87,8 +106,8 @@ function injectRatings(node, ratings) {
 	var imdbRating = ratings["imdb"];
 	var imdbId = ratings["imdbID"];
 	var rtRating = ratings["rt"];
+	var rtUrl = ratings["rtUrl"];
 	var metascore = ratings["metacritic"];
-
 	if (node) {
 		if (!node.querySelector(".imdbRating")) {
 			if (should_append_imdb(imdbRating, imdbId)) {
@@ -99,9 +118,11 @@ function injectRatings(node, ratings) {
 				node.appendChild(imdbSpan());
 			}
 		}
-		if (rtRating && !node.querySelector(".rtRating")) {
-			node.appendChild(rtLogoNode());
-			node.appendChild(rtRatingNode(rtRating));
+		if ((rtRating || rtUrl) && !node.querySelector(".rtRating")) {
+			node.appendChild(rtLogoNode(rtUrl));
+			if (rtRating) {
+				node.appendChild(rtRatingNode(rtUrl, rtRating))
+			};
 		}
 		if (metascore && metascore != "N/A" && !node.querySelector(".metacriticRating")) {
 			node.appendChild(metacriticLogoNode());
