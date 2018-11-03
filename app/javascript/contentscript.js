@@ -7,14 +7,16 @@ var observerOptions = {
 	subtree: true
 }
 
+var checkTitles = getTitles();
+var checkDates = getDates();
+
 function expCheck(title) {
-	for (var i = 0; i < movieTitles.length; i++) {
-		if (movieTitles[i] == title) {
-			return expirationDates[i];
-		} else {
-			return "N/A";
+	for (var i = 0; i < checkTitles.length; i++) {
+		if (checkTitles[i] == title) {
+			return checkDates[i];
 		}
 	}
+	return "N/A";
 }
 
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {
@@ -26,8 +28,9 @@ var jawBoneContentObserver = new MutationObserver(function(mutations, observer) 
 			var titleNode = headerNode.querySelector(".title");
 			var title = titleNode.querySelector("img") ? titleNode.querySelector("img").alt : titleNode.textContent;
 			if (title) {
+				var exp = expCheck(title);
 				getRatings(title, null, null, extractYear(node), function(ratings) {
-					injectRatings(node.querySelector(".meta"), ratings);
+					injectRatings(node.querySelector(".meta"), ratings, exp);
 				});
 			}
 		}
@@ -40,8 +43,9 @@ var titleCardObserver = new MutationObserver(function(mutations, observer) {
 		node = node.target;
 		var titleNode = node.querySelector(".bob-title");
 		if (titleNode && (title = titleNode.textContent)) {
+			var exp = expCheck(title);
 			getRatings(title, null, null, extractYear(node), function(ratings) {
-				injectRatings(node.querySelector(".meta") || titleNode, ratings);
+				injectRatings(node.querySelector(".meta") || titleNode, ratings, exp);
 			});
 		}
 	}
@@ -100,8 +104,9 @@ function addFeaturedRatings(node) {
 			} else {
 				title = titleNode.textContent;
 			}
+			var exp = expCheck(title);
 			getRatings(title, null, null, extractYear(jawBoneNode), function(ratings) {
-				injectRatings(node.querySelector(".meta"), ratings);
+				injectRatings(node.querySelector(".meta"), ratings, exp);
 			});
 		}
 	}
@@ -123,8 +128,9 @@ function addPlayerRatings(titleContainerNode) {
 			return true;
 		}
 	});
+	var exp = expCheck(titleNode.textContent);
 	getRatings(titleNode.textContent, episodeInfo["season"], episodeInfo["episode"], null, function(ratings) {
-		injectRatings(titleNode.parentNode, ratings);
+		injectRatings(titleNode.parentNode, ratings, exp);
 	});
 }
 
@@ -143,8 +149,9 @@ function addEpisodeRatings(episodeListContainer) {
 		var episodes = episodeListContainer.querySelectorAll(".episode-row > div > span.number");
 		episodes.forEach(function(episode) {
 			if (title) {
+				var exp = expCheck(title);
 				getRatings(title, season, episode.textContent, null, function(ratings) {
-					injectRatings(episode.parentNode, ratings);
+					injectRatings(episode.parentNode, ratings, exp);
 				});
 			}
 		});

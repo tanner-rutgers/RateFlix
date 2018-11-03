@@ -35,7 +35,9 @@
         "javascript/ratings.js",
         "javascript/inject.js",
         "javascript/extract.js",
-        "javascript/contentscript.js"]
+	"javascript/expirationdates.js",
+        "javascript/contentscript.js"
+	]
     }
   ],
 
@@ -52,6 +54,7 @@
   "web_accessible_resources": [
     "images/imdb_31x14.png",
     "images/rt_logo.png",
-    "images/metacritic_logo.png"
+    "images/metacritic_logo.png",
+    "images/expiration.png"
   ]
 }

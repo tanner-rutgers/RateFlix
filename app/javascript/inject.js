@@ -27,7 +27,7 @@ function expirationSpan() {
 function expirationNode() {
 	var span = expirationSpan();
 	var image = document.createElement("IMG");
-	image.src = chrome.extension.getURL("images/rt_logo.png");
+	image.src = chrome.extension.getURL("images/expiration.png");
 	image.className = "expLogo";
 	span.appendChild(image);
 	return span;
@@ -72,7 +72,7 @@ function imdbRatingNode(id, rating) {
 function rtLogoNode() {
 	var span = rtSpan();
 	var image = document.createElement("IMG");
-	image.src = chrome.extension.getURL("images/rt_logo2.png");
+	image.src = chrome.extension.getURL("images/rt_logo.png");
 	image.className = "rtLogo";
 	span.appendChild(image);
 	return span;
@@ -125,14 +125,17 @@ function injectRatings(node, ratings, exp) {
 				node.appendChild(imdbSpan());
 			}
 		}
-//		if (rtRating && !node.querySelector(".rtRating")) {
-//			node.appendChild(rtLogoNode());
-//			node.appendChild(rtRatingNode(rtRating));
-//		}
-//		if (metascore && metascore != "N/A" && !node.querySelector(".metacriticRating")) {
-//			node.appendChild(metacriticLogoNode());
-//			node.appendChild(metacriticRatingNode(metascore));
-//		}
-		node.appendChild(expDateNode());
+		if (rtRating && !node.querySelector(".rtRating")) {
+			node.appendChild(rtLogoNode());
+			node.appendChild(rtRatingNode(rtRating));
+		}
+		if (metascore && metascore != "N/A" && !node.querySelector(".metacriticRating")) {
+			node.appendChild(metacriticLogoNode());
+			node.appendChild(metacriticRatingNode(metascore));
+		}
+		if (exp != "N/A"){
+			node.appendChild(expirationNode());
+			node.appendChild(expDateNode("Expiring " + exp));
+		}
 	}
 }
