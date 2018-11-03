@@ -1,4 +1,4 @@
-var OMDB_URL = 'http://www.omdbapi.com/?';
+var OMDB_URL = 'https://www.omdbapi.com/?';
 var API_KEY = "c81c5662";
 var TIMEOUT = 3000;
 
