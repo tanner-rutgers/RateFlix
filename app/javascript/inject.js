@@ -33,6 +33,14 @@ function expirationNode() {
 	return span;
 }
 
+function expDateNode(rating) {
+	var span = expirationSpan();
+	var rating = document.createTextNode(rating);
+	span.appendChild(rating);
+	return span;
+}
+
+
 function imdbLinkNode(id) {
 	var link = document.createElement("A");
 	link.href = "https://www.imdb.com/title/" + id;
@@ -100,7 +108,7 @@ function should_append_imdb(rating, id) {
 	return false;
 }
 
-function injectRatings(node, ratings) {
+function injectRatings(node, ratings, exp) {
 	var imdbRating = ratings["imdb"];
 	var imdbId = ratings["imdbID"];
 	var rtRating = ratings["rt"];
@@ -117,14 +125,14 @@ function injectRatings(node, ratings) {
 				node.appendChild(imdbSpan());
 			}
 		}
-		if (rtRating && !node.querySelector(".rtRating")) {
-			node.appendChild(rtLogoNode());
-			node.appendChild(rtRatingNode(rtRating));
-		}
-		if (metascore && metascore != "N/A" && !node.querySelector(".metacriticRating")) {
-			node.appendChild(metacriticLogoNode());
-			node.appendChild(metacriticRatingNode(metascore));
-		}
-		node.appendChild(expirationNode());
+//		if (rtRating && !node.querySelector(".rtRating")) {
+//			node.appendChild(rtLogoNode());
+//			node.appendChild(rtRatingNode(rtRating));
+//		}
+//		if (metascore && metascore != "N/A" && !node.querySelector(".metacriticRating")) {
+//			node.appendChild(metacriticLogoNode());
+//			node.appendChild(metacriticRatingNode(metascore));
+//		}
+		node.appendChild(expDateNode());
 	}
 }
