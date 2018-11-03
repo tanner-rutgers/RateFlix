@@ -7,6 +7,16 @@ var observerOptions = {
 	subtree: true
 }
 
+function expCheck(title) {
+	for (var i = 0; i < movieTitles.length; i++) {
+		if (movieTitles[i] == title) {
+			return expirationDates[i];
+		} else {
+			return "N/A";
+		}
+	}
+}
+
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations.find(function(mutation) { return mutation.target.hasAttribute("observed") });
 	if (node) {
