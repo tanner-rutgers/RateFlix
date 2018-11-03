@@ -6,7 +6,8 @@
 
 .bob-card .imdbRating,
 .bob-card .rtRating,
-.bob-card .metacriticRating {
+.bob-card .metacriticRating
+.bob-card .expiration {
 	margin-right: .333vw !important;
 	display: inline-block !important;
 	line-height: 2 !important;
@@ -14,7 +15,7 @@
 	margin-bottom: .3vw;
 }
 
-.imdbLogo, .rtLogo, .metacriticLogo {
+.imdbLogo, .rtLogo, .metacriticLogo .expLogo {
 	vertical-align: middle;
 }
 
@@ -29,9 +30,11 @@
 .bob-card .imdbRating .imdbLogo,
 .bob-card .rtRating .rtLogo,
 .bob-card .metacriticRating .metacriticLogo,
+.bob-card .expLogo .expiration
 .video-title .imdbRating .imdbLogo,
 .video-title .rtRating .rtLogo,
-.video-title .metacriticRating .metacriticLogo {
+.video-title .metacriticRating .metacriticLogo 
+.video-title .expLogo .expiration{
 	margin-bottom: 2px;
 }
 
@@ -41,7 +44,8 @@
 
 .episode-row .imdbRating,
 .episode-row .rtRating,
-.episode-row .metacriticRating {
+.episode-row .metacriticRating 
+.episode-row .expiration {
 	margin-right: 10px;
 	min-width: 35px;
 	font-size: .9em !important;
