@@ -23,20 +23,29 @@ function expirationSpan() {
 	return span;
 }
 
+// NEW FUNCTION
+function expirationNode() {
+	var span = expirationSpan();
+	var image = document.createElement("IMG");
+	image.src = chrome.extension.getURL("images/rt_logo.png");
+	image.className = "expLogo";
+	span.appendChild(image);
+	return span;
+}
+
+function expDateNode(rating) {
+	var span = expirationSpan();
+	var rating = document.createTextNode(rating);
+	span.appendChild(rating);
+	return span;
+}
+
+
 function imdbLinkNode(id) {
 	var link = document.createElement("A");
 	link.href = "https://www.imdb.com/title/" + id;
 	link.target = "_blank";
 	return link;
-}
-
-// NEW FUNCTION
-function expirationNode(id) {
-	var span = expirationSpan();
-	var image = document.createElement("IMG");
-	image.src = chrome.extension.getURL("images/expiration_logo.png");
-	image.className = "expLogo";
-	return span;
 }
 
 function imdbLogoNode(id) {
@@ -63,7 +72,7 @@ function imdbRatingNode(id, rating) {
 function rtLogoNode() {
 	var span = rtSpan();
 	var image = document.createElement("IMG");
-	image.src = chrome.extension.getURL("images/rt_logo.png");
+	image.src = chrome.extension.getURL("images/rt_logo2.png");
 	image.className = "rtLogo";
 	span.appendChild(image);
 	return span;
@@ -99,7 +108,7 @@ function should_append_imdb(rating, id) {
 	return false;
 }
 
-function injectRatings(node, ratings) {
+function injectRatings(node, ratings, exp) {
 	var imdbRating = ratings["imdb"];
 	var imdbId = ratings["imdbID"];
 	var rtRating = ratings["rt"];
@@ -107,6 +116,7 @@ function injectRatings(node, ratings) {
 
 	if (node) {
 		if (!node.querySelector(".imdbRating")) {
+
 			if (should_append_imdb(imdbRating, imdbId)) {
 				node.appendChild(imdbLogoNode(imdbId));
 				node.appendChild(imdbRatingNode(imdbId, imdbRating));
@@ -115,13 +125,14 @@ function injectRatings(node, ratings) {
 				node.appendChild(imdbSpan());
 			}
 		}
-		if (rtRating && !node.querySelector(".rtRating")) {
-			node.appendChild(rtLogoNode());
-			node.appendChild(rtRatingNode(rtRating));
-		}
-		if (metascore && metascore != "N/A" && !node.querySelector(".metacriticRating")) {
-			node.appendChild(metacriticLogoNode());
-			node.appendChild(metacriticRatingNode(metascore));
-		}
+//		if (rtRating && !node.querySelector(".rtRating")) {
+//			node.appendChild(rtLogoNode());
+//			node.appendChild(rtRatingNode(rtRating));
+//		}
+//		if (metascore && metascore != "N/A" && !node.querySelector(".metacriticRating")) {
+//			node.appendChild(metacriticLogoNode());
+//			node.appendChild(metacriticRatingNode(metascore));
+//		}
+		node.appendChild(expDateNode());
 	}
 }
