@@ -5,3 +5,11 @@ var movieTitles = ["The Mekong River with Sue Perkins",
 
 var expirationDates = ["Nov. 3rd", "Nov. 4th", "Nov. 5th", "Nov. 7th",
     "Nov. 10th", "Nov. 15th", "Nov. 17th", "Nov. 18th", "Nov. 19th"];
+
+function getTitles() {
+    return movieTitles;
+}
+
+function getDates() {
+    return expirationDates;
+}
