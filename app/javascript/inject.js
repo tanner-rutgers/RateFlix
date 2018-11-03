@@ -16,14 +16,12 @@ function metacriticSpan() {
 	return span;
 }
 
-// NEW FUNCTION
 function expirationSpan() {
 	var span = document.createElement("SPAN");
 	span.className = "expiration";
 	return span;
 }
 
-// NEW FUNCTION
 function expirationNode() {
 	var span = expirationSpan();
 	var image = document.createElement("IMG");
