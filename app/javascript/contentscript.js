@@ -138,15 +138,14 @@ function addEpisodeRatings(episodeListContainer) {
 	var title = document.querySelector(".video-title").getElementsByTagName('h4')[0].textContent;
 	var seasonNode = episodeListContainer.querySelector(".header-title");
 	var season = extractSeasonNumber(seasonNode.textContent);
+
 	if (season) {
 		var episodes = episodeListContainer.querySelectorAll(".episode-row > .nfp-episode-preview > .title-container");
 		episodes.forEach(function(episode) {
 			const episodeNo = episode.querySelectorAll("span.number")[0].textContent;
 			if (title) {
 				getRatings(title, season, episodeNo, null, function(ratings) {
-					const div = document.createElement("DIV");
-					episode.insertBefore(div, episode.lastChild);
-					injectRatings(div, ratings);
+					injectRatings(episode, ratings);
 				});
 			}
 		});
