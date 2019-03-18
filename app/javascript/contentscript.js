@@ -142,7 +142,7 @@ function addEpisodeRatings(episodeListContainer) {
 	if (season) {
 		var episodes = episodeListContainer.querySelectorAll(".episode-row > .nfp-episode-preview > .title-container");
 		episodes.forEach(function(episode) {
-			const episodeNo = episode.querySelectorAll("span.number")[0].textContent;
+			const episodeNo = episode.querySelector("span.number").textContent;
 			if (title) {
 				getRatings(title, season, episodeNo, null, function(ratings) {
 					injectRatings(episode, ratings);
