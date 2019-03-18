@@ -119,22 +119,33 @@ function addPlayerRatings(titleContainerNode) {
 }
 
 var episodeContainerObserver = new MutationObserver(function(mutations, observer) {
-	var episodeListContainer = document.querySelector(".episodes-pane");
-	if (episodeListContainer) {
-		addEpisodeRatings(episodeListContainer);
-	}
+	Array.from(mutations).find(mutation => {
+		const found = Array.from(mutation.addedNodes)
+			.filter(node => node instanceof Element)
+			.find(node => {
+				const episodeList = node.querySelector(".episodes-pane");
+				if (episodeList) {
+					addEpisodeRatings(episodeList);
+					return true;
+				}
+			});
+
+		return found != undefined;
+	});
 });
 
 function addEpisodeRatings(episodeListContainer) {
 	var title = document.querySelector(".video-title").getElementsByTagName('h4')[0].textContent;
 	var seasonNode = episodeListContainer.querySelector(".header-title");
 	var season = extractSeasonNumber(seasonNode.textContent);
+
 	if (season) {
-		var episodes = episodeListContainer.querySelectorAll(".episode-row > div > span.number");
+		var episodes = episodeListContainer.querySelectorAll(".episode-row > .nfp-episode-preview > .title-container");
 		episodes.forEach(function(episode) {
+			const episodeNo = episode.querySelector("span.number").textContent;
 			if (title) {
-				getRatings(title, season, episode.textContent, null, function(ratings) {
-					injectRatings(episode.parentNode, ratings);
+				getRatings(title, season, episodeNo, null, function(ratings) {
+					injectRatings(episode, ratings);
 				});
 			}
 		});
