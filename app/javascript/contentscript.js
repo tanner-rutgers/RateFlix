@@ -119,10 +119,19 @@ function addPlayerRatings(titleContainerNode) {
 }
 
 var episodeContainerObserver = new MutationObserver(function(mutations, observer) {
-	var episodeListContainer = document.querySelector(".episodes-pane");
-	if (episodeListContainer) {
-		addEpisodeRatings(episodeListContainer);
-	}
+	Array.from(mutations).find(mutation => {
+		const found = Array.from(mutation.addedNodes)
+			.filter(node => node instanceof Element)
+			.find(node => {
+				const episodeList = node.querySelector(".episodes-pane");
+				if (episodeList) {
+					addEpisodeRatings(episodeList);
+					return true;
+				}
+			});
+
+		return found != undefined;
+	});
 });
 
 function addEpisodeRatings(episodeListContainer) {
@@ -130,11 +139,14 @@ function addEpisodeRatings(episodeListContainer) {
 	var seasonNode = episodeListContainer.querySelector(".header-title");
 	var season = extractSeasonNumber(seasonNode.textContent);
 	if (season) {
-		var episodes = episodeListContainer.querySelectorAll(".episode-row > div > span.number");
+		var episodes = episodeListContainer.querySelectorAll(".episode-row > .nfp-episode-preview > .title-container");
 		episodes.forEach(function(episode) {
+			const episodeNo = episode.querySelectorAll("span.number")[0].textContent;
 			if (title) {
-				getRatings(title, season, episode.textContent, null, function(ratings) {
-					injectRatings(episode.parentNode, ratings);
+				getRatings(title, season, episodeNo, null, function(ratings) {
+					const div = document.createElement("DIV");
+					episode.insertBefore(div, episode.lastChild);
+					injectRatings(div, ratings);
 				});
 			}
 		});
