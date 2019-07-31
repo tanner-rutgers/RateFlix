@@ -16,7 +16,7 @@ function expCheck(title) {
 			return checkDates[i];
 		}
 	}
-	return "N/A";
+	return null;
 }
 
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {

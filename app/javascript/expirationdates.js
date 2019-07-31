@@ -1,16 +1,70 @@
-var movieTitles = ["The Mekong River with Sue Perkins",
-    "Goodbye Mr. Black", "A Pigeon Sat on a Branch Reflecting on Existence", 
-    "Al’s Fish’n With Mates", "Dicte", "Dreamland", 
-    "Lucha Underground", "Undercover Boss",
-    "Go Back to Where You Came From", "Goosebumps"];
+var EXP_NETFLIX_URL = 'https://www.whats-on-netflix.com/leaving-soon/';
+var TIMEOUT = 3000;
 
-var expirationDates = ["Nov. 3rd", "Nov. 4th", "Nov. 5th", "Nov. 5th", "Nov. 7th",
-    "Nov. 10th", "Nov. 15th", "Nov. 17th", "Nov. 18th", "Nov. 19th"];
+movieTitles = {};
 
 function getTitles() {
     return movieTitles;
 }
 
 function getDates() {
-    return expirationDates;
+    return movieTitles;
 }
+
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+var today = new Date();
+var year = today.getFullYear();
+var month = monthNames[today.getMonth()];
+var current_url = EXP_NETFLIX_URL + 'titles-leaving-netflix-in-' + month + '-' + year + '/';
+var query_url = month + '-' + year + '/'
+
+var expFetchCache = {};
+var expFetchingCache = {};
+
+chrome.runtime.sendMessage({contentScriptQuery: "queryExpDates", queryDate: query_url},
+    function(response) {
+      movieTitles = response;
+    }
+);
+
+// function populateTitles(callback) {
+// 	var cacheKey = hashKey(title);
+// 	if (expFetchedCache[cacheKey]) {
+// 		log("Cached expiration dates for " + cacheKey);
+// 		callback(expFetchedCache[cacheKey]);
+// 	} else if (!expFetchingCache[cacheKey]) {
+// 		log("Fetching expiration dates for " + argsString);
+// 		expfetchingCache[cacheKey] = true;
+// 		$.ajax({
+// 			url: current_url,
+// 			dataType: 'jsonp',
+// 			success: function(response) {
+// 				if (!response.imdbRating && year) {
+// 					log("Failed to fetch ratings for " + argsString);
+// 					delete expFetchingCache[cacheKey];
+// 					return fetchRatings(title, season, episode, null, callback);
+// 				}
+// 				var ratings = {
+// 					imdb: response.imdbRating,
+// 					imdbID: response.imdbID,
+// 					rt: fetchRTRating(response),
+// 					metacritic: response.Metascore
+// 				}
+// 				log("Fetched ratings for " + argsString + ": " + JSON.stringify(ratings));
+// 				fetchedCache[cacheKey] = ratings;
+// 				callback(ratings);
+// 			},
+// 			error: function(jqXHR, status, errorThrown) {
+// 				if (status == "timeout") {
+// 					log("Failed to fetch ratings for " + argsString + " due to timeout");
+// 					delete fetchingCache[cacheKey];
+// 					fetchExpDates(title, season, episode, null, callback);
+// 				}
+// 			},
+// 			timeout: TIMEOUT
+// 		});
+// 	}
+// }

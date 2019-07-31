@@ -1,9 +1,9 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
 
   "name": "Netflix Plus",
   "description": "Show ratings and expiring content on Netflix™",
-  "version": "3.1.1",
+  "version": "4.1.1",
 
   "icons": {
     "16": "images/icon_16.png",
@@ -35,7 +35,7 @@
         "javascript/ratings.js",
         "javascript/inject.js",
         "javascript/extract.js",
-	"javascript/expirationdates.js",
+	      "javascript/expirationdates.js",
         "javascript/contentscript.js"
 	]
     }
@@ -47,6 +47,7 @@
 
   "permissions": [
     "https://*.netflix.com/*",
+    "https://*.whats-on-netflix.com/*",
     "https://ajax.googleapis.com/",
     "tabs"
   ],

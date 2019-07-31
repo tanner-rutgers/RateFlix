@@ -131,7 +131,7 @@ function injectRatings(node, ratings, exp) {
 			node.appendChild(metacriticLogoNode());
 			node.appendChild(metacriticRatingNode(metascore));
 		}
-		if (exp != "N/A"){
+		if (exp){
 			node.appendChild(expirationNode());
 			node.appendChild(expDateNode("Expiring " + exp));
 		}
