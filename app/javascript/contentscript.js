@@ -7,16 +7,8 @@ var observerOptions = {
 	subtree: true
 }
 
-var checkTitles = getTitles();
-var checkDates = getDates();
-
 function expCheck(title) {
-	for (var i = 0; i < checkTitles.length; i++) {
-		if (checkTitles[i] == title) {
-			return checkDates[i];
-		}
-	}
-	return null;
+	return expiredMovies.has(titles) ? expiredMovies.get(title) : null;
 }
 
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {

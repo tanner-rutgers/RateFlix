@@ -3,7 +3,7 @@
 
   "name": "Netflix Plus",
   "description": "Show ratings and expiring content on Netflix™",
-  "version": "4.1.1",
+  "version": "4.1.4",
 
   "icons": {
     "16": "images/icon_16.png",
@@ -30,19 +30,19 @@
       "css": ["stylesheets/contentscript.css"],
       "js": [
         "javascript/jquery-3.1.1.min.js",
+	      "javascript/expirationdates.js",
         "javascript/logger.js",
         "javascript/omdb.js",
         "javascript/ratings.js",
         "javascript/inject.js",
         "javascript/extract.js",
-	      "javascript/expirationdates.js",
         "javascript/contentscript.js"
 	]
     }
   ],
 
   "background": {
-    "scripts": ["javascript/background.js"]
+    "scripts": ["javascript/background.js", "javascript/parse.js"]
   },
 
   "permissions": [

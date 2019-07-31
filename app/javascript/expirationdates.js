@@ -1,15 +1,7 @@
 var EXP_NETFLIX_URL = 'https://www.whats-on-netflix.com/leaving-soon/';
 var TIMEOUT = 3000;
 
-movieTitles = {};
-
-function getTitles() {
-    return movieTitles;
-}
-
-function getDates() {
-    return movieTitles;
-}
+var expiredMovies = new Map();
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
@@ -26,9 +18,14 @@ var expFetchingCache = {};
 
 chrome.runtime.sendMessage({contentScriptQuery: "queryExpDates", queryDate: query_url},
     function(response) {
-      movieTitles = response;
+      debugger;
+       expiredMovies = response;
     }
 );
+
+function getExpiredMovies() {
+  return expiredMovies;
+}
 
 // function populateTitles(callback) {
 // 	var cacheKey = hashKey(title);
