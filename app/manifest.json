@@ -30,19 +30,20 @@
       "css": ["stylesheets/contentscript.css"],
       "js": [
         "javascript/jquery-3.1.1.min.js",
-	      "javascript/expirationdates.js",
         "javascript/logger.js",
         "javascript/omdb.js",
         "javascript/ratings.js",
         "javascript/inject.js",
         "javascript/extract.js",
+        "javascript/parse.js",
+	      "javascript/expirationdates.js",
         "javascript/contentscript.js"
 	]
     }
   ],
 
   "background": {
-    "scripts": ["javascript/background.js", "javascript/parse.js"]
+    "scripts": ["javascript/background.js"]
   },
 
   "permissions": [

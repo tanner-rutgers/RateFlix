@@ -8,7 +8,7 @@ var observerOptions = {
 }
 
 function expCheck(title) {
-	return expiredMovies.has(titles) ? expiredMovies.get(title) : null;
+	return expiredMovies.has(title) ? expiredMovies.get(title) : null;
 }
 
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {

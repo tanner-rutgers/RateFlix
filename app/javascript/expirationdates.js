@@ -3,23 +3,26 @@ var TIMEOUT = 3000;
 
 var expiredMovies = new Map();
 
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+function getQueryUrl(){
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
 
-var today = new Date();
-var year = today.getFullYear();
-var month = monthNames[today.getMonth()];
-var current_url = EXP_NETFLIX_URL + 'titles-leaving-netflix-in-' + month + '-' + year + '/';
-var query_url = month + '-' + year + '/'
+  var today = new Date();
+  var year = today.getFullYear();
+  var month = monthNames[today.getMonth()];
+  var current_url = EXP_NETFLIX_URL + 'titles-leaving-netflix-in-' + month + '-' + year + '/';
+  var query_url = month + '-' + year + '/';
+
+  return query_url;
+}
 
 var expFetchCache = {};
 var expFetchingCache = {};
 
-chrome.runtime.sendMessage({contentScriptQuery: "queryExpDates", queryDate: query_url},
+chrome.runtime.sendMessage({contentScriptQuery: "queryExpDates", queryDate: getQueryUrl()},
     function(response) {
-      debugger;
-       expiredMovies = response;
+      expiredMovies = parseResponse(response);
     }
 );
 
