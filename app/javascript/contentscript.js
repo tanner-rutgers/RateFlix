@@ -31,9 +31,9 @@ var jawBoneContentObserver = new MutationObserver(function(mutations, observer) 
 
 var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations.find(function(mutation) { return mutation.target.hasAttribute("observed") });
-	if (node) {
+	if (true) {
 		node = node.target;
-		var titleNode = node.querySelector(".bob-title");
+		var titleNode = node.querySelector(".fallback-text");
 		if (titleNode && (title = titleNode.textContent)) {
 			var exp = expCheck(title);
 			getRatings(title, null, null, extractYear(node), function(ratings) {
@@ -76,11 +76,28 @@ var rowObserver = new MutationObserver(function(mutations, observer) {
 	});
 });
 
+var expiryObserver = new MutationObserver(function(mutations, observer) {
+	if (mainView = document.querySelector(".mainView")) {
+		mainView.querySelectorAll(".title-card-container > div").forEach(function(node) {
+			if (title = node.querySelector(".fallback-text"));
+				injectExpiryIndicator(node, title.textContent);
+		});
+	}
+});
+
+if (mainView = document.querySelector(".mainView")) {
+	mainView.querySelectorAll(".title-card-container > div").forEach(function(node) {
+		if (title = node.querySelector(".fallback-text"));
+			injectExpiryIndicator(node, title.textContent);
+	});
+}
+
 var mainObserver = new MutationObserver(function(mutations, observer) {
 	var mainView = document.querySelector(".mainView");
 	if (mainView) {
 		observer.disconnect();
 		rowObserver.observe(mainView, observerOptions);
+		expiryObserver.observe(expiryObserver);
 		addTitleObserver(mainView);
 		addFeaturedRatings(mainView);
 	}

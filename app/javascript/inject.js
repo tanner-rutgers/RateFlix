@@ -38,7 +38,6 @@ function expDateNode(rating) {
 	return span;
 }
 
-
 function imdbLinkNode(id) {
 	var link = document.createElement("A");
 	link.href = "https://www.imdb.com/title/" + id;
@@ -104,6 +103,12 @@ function should_append_imdb(rating, id) {
 		return true;
 	}
 	return false;
+}
+
+function injectExpiryIndicator(node, title) {
+	if (node && expiredMovies.has(title)) {
+		node.appendChild(expirationNode());
+	};
 }
 
 function injectRatings(node, ratings, exp) {

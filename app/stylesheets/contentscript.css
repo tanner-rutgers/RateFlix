@@ -33,7 +33,7 @@
 .bob-card .expLogo .expiration
 .video-title .imdbRating .imdbLogo,
 .video-title .rtRating .rtLogo,
-.video-title .metacriticRating .metacriticLogo 
+.video-title .metacriticRating .metacriticLogo
 .video-title .expLogo .expiration{
 	margin-bottom: 2px;
 }
@@ -42,9 +42,16 @@
 	color: #adadad !important;
 }
 
+.slider-item .expiration{
+	position: absolute;
+	top: 1px;
+	right: 4px;
+	z-index: 1;
+}
+
 .episode-row .imdbRating,
 .episode-row .rtRating,
-.episode-row .metacriticRating 
+.episode-row .metacriticRating
 .episode-row .expiration {
 	margin-right: 10px;
 	min-width: 35px;
