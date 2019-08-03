@@ -4,7 +4,8 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var observerOptions = {
 	childList: true,
-	subtree: true
+	subtree: true,
+	attributes: true
 }
 
 function expCheck(title) {
@@ -31,7 +32,7 @@ var jawBoneContentObserver = new MutationObserver(function(mutations, observer) 
 
 var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations.find(function(mutation) { return mutation.target.hasAttribute("observed") });
-	if (true) {
+	if (node) {
 		node = node.target;
 		var titleNode = node.querySelector(".fallback-text");
 		if (titleNode && (title = titleNode.textContent)) {
@@ -50,7 +51,7 @@ function addTitleObserver(node) {
 			jawBoneContentObserver.observe(node, observerOptions);
 		};
 	});
-	node.querySelectorAll(".title-card-container > div > span").forEach(function(node) {
+	node.querySelectorAll(".title-card-container > div").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
 			node.setAttribute("observed", "true");
 			titleCardObserver.observe(node, observerOptions);
@@ -85,19 +86,18 @@ var expiryObserver = new MutationObserver(function(mutations, observer) {
 	}
 });
 
-if (mainView = document.querySelector(".mainView")) {
-	mainView.querySelectorAll(".title-card-container > div").forEach(function(node) {
-		if (title = node.querySelector(".fallback-text"));
-			injectExpiryIndicator(node, title.textContent);
-	});
-}
+// if (mainView = document.querySelector(".mainView")) {
+// 	mainView.querySelectorAll(".title-card-container > div").forEach(function(node) {
+// 		if (title = node.querySelector(".fallback-text"));
+// 			injectExpiryIndicator(node, title.textContent);
+// 	});
+// }
 
 var mainObserver = new MutationObserver(function(mutations, observer) {
 	var mainView = document.querySelector(".mainView");
 	if (mainView) {
 		observer.disconnect();
 		rowObserver.observe(mainView, observerOptions);
-		expiryObserver.observe(expiryObserver);
 		addTitleObserver(mainView);
 		addFeaturedRatings(mainView);
 	}

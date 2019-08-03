@@ -42,12 +42,20 @@
 	color: #adadad !important;
 }
 
-.slider-item .expiration{
+/* .slider-item .expiration{
 	position: absolute;
 	top: 1px;
 	right: 4px;
 	z-index: 1;
-}
+} */
+
+/* .slider-item .bobOpen .expiration{
+	margin-right: 10px;
+	min-width: 35px;
+	font-size: .9em !important;
+    font-weight: 400 !important;
+    color: #fff !important;
+} */
 
 .episode-row .imdbRating,
 .episode-row .rtRating,
