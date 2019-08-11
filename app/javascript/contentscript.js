@@ -98,22 +98,6 @@ var rowObserver = new MutationObserver(function(mutations, observer) {
 	});
 });
 
-var expiryObserver = new MutationObserver(function(mutations, observer) {
-	if (mainView = document.querySelector(".mainView")) {
-		mainView.querySelectorAll(".title-card-container > div").forEach(function(node) {
-			if (title = node.querySelector(".fallback-text"));
-				injectExpiryIndicator(node, title.textContent);
-		});
-	}
-});
-
-// if (mainView = document.querySelector(".mainView")) {
-// 	mainView.querySelectorAll(".title-card-container > div").forEach(function(node) {
-// 		if (title = node.querySelector(".fallback-text"));
-// 			injectExpiryIndicator(node, title.textContent);
-// 	});
-// }
-
 var mainObserver = new MutationObserver(function(mutations, observer) {
 	var mainView = document.querySelector(".mainView");
 	if (mainView) {

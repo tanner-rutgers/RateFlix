@@ -59,6 +59,10 @@
 	display: none;
 }
 
+.is-jaw-open .expiration-title{
+	display: none;
+}
+
 .episode-row .imdbRating,
 .episode-row .rtRating,
 .episode-row .metacriticRating
