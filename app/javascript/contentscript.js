@@ -5,7 +5,6 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 var observerOptions = {
 	childList: true,
 	subtree: true,
-	attributes: true
 }
 
 function expCheck(title) {
@@ -44,6 +43,27 @@ var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	}
 });
 
+var titleExpiryObserver = new MutationObserver(function(mutations, observer) {
+	var node = mutations.find(function(mutation) { return mutation.target.hasAttribute("observed") });
+	if (node && (title = node.target.textContent)) {
+		injectExpiryIndicator(node, title);
+	}
+});
+
+function checkCurrentTitles(node, force=false){
+	textObserverOptions = { characterData: true, childList: true };
+	node.querySelectorAll(".title-card-container > .title-card").forEach(function(node) {
+		baseNode = node;
+		node = node.querySelector(".fallback-text");
+		if (force) injectExpiryIndicator(baseNode, node.textContent);
+		if (!node.hasAttribute("observed")) {
+			node.setAttribute("observed", "true");
+			injectExpiryIndicator(baseNode, node.textContent);
+			titleExpiryObserver.observe(node, textObserverOptions);
+		};
+	});
+}
+
 function addTitleObserver(node) {
 	node.querySelectorAll(".jawBoneContent").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
@@ -63,6 +83,7 @@ function addTitleObserver(node) {
 			titleCardObserver.observe(node, observerOptions);
 		};
 	});
+	checkCurrentTitles(node);
 }
 
 var rowObserver = new MutationObserver(function(mutations, observer) {

@@ -17,16 +17,17 @@ function getQueryUrl(skip=0){
   return query_url;
 }
 
+function refreshTitles(){
+  var mainView = document.querySelector(".mainView");
+  if (mainView) checkCurrentTitles(mainView, true);
+}
+
 for (val in [0, 1]){
   chrome.runtime.sendMessage({contentScriptQuery: "queryExpDates", queryDate: getQueryUrl(val)},
     function(response) {
       expiredMovies = new Map(function*() {
         yield* expiredMovies; yield* parseResponse(response);
       }());
-    }
-  );
-}
-
-function getExpiredMovies() {
-  return expiredMovies;
+      refreshTitles();
+  });
 }

@@ -16,14 +16,14 @@ function metacriticSpan() {
 	return span;
 }
 
-function expirationSpan() {
+function expirationSpan(title=false) {
 	var span = document.createElement("SPAN");
-	span.className = "expiration";
+	span.className = title ? "expiration-title" : "expiration";
 	return span;
 }
 
-function expirationNode() {
-	var span = expirationSpan();
+function expirationNode(title=false) {
+	var span = expirationSpan(title);
 	var image = document.createElement("IMG");
 	image.src = chrome.extension.getURL("images/expiration.png");
 	image.className = "expLogo";
@@ -107,7 +107,7 @@ function should_append_imdb(rating, id) {
 
 function injectExpiryIndicator(node, title) {
 	if (node && expiredMovies.has(title)) {
-		node.appendChild(expirationNode());
+		node.appendChild(expirationNode(true));
 	};
 }
 
