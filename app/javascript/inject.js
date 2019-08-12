@@ -106,7 +106,7 @@ function should_append_imdb(rating, id) {
 }
 
 function injectExpiryIndicator(node, title) {
-	if (node && expiredMovies.has(title)) {
+	if (node && expiredMovies.has(title) && !node.querySelector(".expiration-title")) {
 		node.appendChild(expirationNode(true));
 	};
 }
@@ -136,7 +136,7 @@ function injectRatings(node, ratings, exp) {
 			node.appendChild(metacriticLogoNode());
 			node.appendChild(metacriticRatingNode(metascore));
 		}
-		if (exp){
+		if (exp && !node.querySelector(".expiration")){
 			node.appendChild(expirationNode());
 			node.appendChild(expDateNode("Expiring " + exp));
 		}

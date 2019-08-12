@@ -35,10 +35,11 @@ var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	if (node) {
 		node = node.target;
 		var titleNode = node.querySelector(".fallback-text");
-		if (titleNode && (title = titleNode.textContent)) {
+		var injectDestination = node.querySelector(".meta");
+		if (titleNode && (title = titleNode.textContent) && injectDestination) {
 			var exp = expCheck(title);
 			getRatings(title, null, null, extractYear(node), function(ratings) {
-				injectRatings(node.querySelector(".meta") || titleNode, ratings, exp);
+				injectRatings(injectDestination, ratings, exp);
 			});
 		}
 	}
