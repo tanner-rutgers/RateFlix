@@ -4,19 +4,12 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var observerOptions = {
 	childList: true,
-	subtree: true
+	subtree: true,
+	attributes: true,
 }
 
-var checkTitles = getTitles();
-var checkDates = getDates();
-
 function expCheck(title) {
-	for (var i = 0; i < checkTitles.length; i++) {
-		if (checkTitles[i] == title) {
-			return checkDates[i];
-		}
-	}
-	return "N/A";
+	return expiredMovies.has(title) ? expiredMovies.get(title) : null;
 }
 
 var jawBoneContentObserver = new MutationObserver(function(mutations, observer) {
@@ -41,7 +34,7 @@ var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	var node = mutations.find(function(mutation) { return mutation.target.hasAttribute("observed") });
 	if (node) {
 		node = node.target;
-		var titleNode = node.querySelector(".bob-title");
+		var titleNode = node.querySelector(".fallback-text");
 		if (titleNode && (title = titleNode.textContent)) {
 			var exp = expCheck(title);
 			getRatings(title, null, null, extractYear(node), function(ratings) {
@@ -51,6 +44,27 @@ var titleCardObserver = new MutationObserver(function(mutations, observer) {
 	}
 });
 
+var titleExpiryObserver = new MutationObserver(function(mutations, observer) {
+	var node = mutations.find(function(mutation) { return mutation.target.hasAttribute("observed") });
+	if (node && (title = node.target.textContent)) {
+		injectExpiryIndicator(node, title);
+	}
+});
+
+function checkCurrentTitles(node, force=false){
+	textObserverOptions = { characterData: true, childList: true };
+	node.querySelectorAll(".title-card-container > .title-card").forEach(function(node) {
+		baseNode = node;
+		node = node.querySelector(".fallback-text");
+		if (force) injectExpiryIndicator(baseNode, node.textContent);
+		if (!node.hasAttribute("observed")) {
+			node.setAttribute("observed", "true");
+			injectExpiryIndicator(baseNode, node.textContent);
+			titleExpiryObserver.observe(node, textObserverOptions);
+		};
+	});
+}
+
 function addTitleObserver(node) {
 	node.querySelectorAll(".jawBoneContent").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
@@ -58,7 +72,7 @@ function addTitleObserver(node) {
 			jawBoneContentObserver.observe(node, observerOptions);
 		};
 	});
-	node.querySelectorAll(".title-card-container > div > span").forEach(function(node) {
+	node.querySelectorAll(".title-card-container > div").forEach(function(node) {
 		if (!node.hasAttribute("observed")) {
 			node.setAttribute("observed", "true");
 			titleCardObserver.observe(node, observerOptions);
@@ -70,6 +84,7 @@ function addTitleObserver(node) {
 			titleCardObserver.observe(node, observerOptions);
 		};
 	});
+	checkCurrentTitles(node);
 }
 
 var rowObserver = new MutationObserver(function(mutations, observer) {

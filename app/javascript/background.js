@@ -11,3 +11,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 	}
 });
 
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.contentScriptQuery == "queryExpDates") {
+    var url = "https://www.whats-on-netflix.com/leaving-soon/titles-leaving-netflix-in-" + request.queryDate;
+    fetch(url)
+        .then(response => response.text())
+        .then(text => sendResponse(text))
+        .catch(error => console.log(error))
+    return true;
+  }
+});
