@@ -5,6 +5,7 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 var observerOptions = {
 	childList: true,
 	subtree: true,
+	attributes: true,
 }
 
 function expCheck(title) {
