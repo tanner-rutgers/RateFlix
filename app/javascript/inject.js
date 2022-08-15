@@ -12,7 +12,7 @@ function injectImdbRating(ratingsDiv, ratings) {
 
 	if ((rating && rating != "N/A") || id) {
 		var logo = document.createElement("img");
-		logo.src = chrome.extension.getURL("images/imdb_31x14.png");
+		logo.src = chrome.runtime.getURL("images/imdb_31x14.png");
 		logo.className = "imdbLogo";
 		logo.style.paddingRight = "0.5vw";
 
@@ -41,7 +41,7 @@ function injectRtRating(ratingsDiv, ratings) {
 
 	if (rating && rating != "N/A") {
 		var logo = document.createElement("img");
-		logo.src = chrome.extension.getURL("images/rt_logo.png");
+		logo.src = chrome.runtime.getURL("images/rt_logo.png");
 		logo.className = "rtLogo";
 		logo.style.paddingRight = "0.5vw";
 
@@ -61,7 +61,7 @@ function injectMetascoreRating(ratingsDiv, ratings) {
 
 	if (rating && rating != "N/A") {
 		var logo = document.createElement("img");
-		logo.src = chrome.extension.getURL("images/metacritic_logo.png")
+		logo.src = chrome.runtime.getURL("images/metacritic_logo.png")
 		logo.className = "metacriticLogo";
 		logo.style.paddingRight = "0.5vw";
 
