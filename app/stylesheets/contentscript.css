@@ -1,54 +1,8 @@
-.imdbRating a,
-.rtRating a,
-.metacriticRating a {
-	color: #fff;
-}
-
-.bob-card .imdbRating,
-.bob-card .rtRating,
-.bob-card .metacriticRating {
-	margin-right: .333vw !important;
-	display: inline-block !important;
-	line-height: 2 !important;
-	font-weight: 700 !important;
-	margin-bottom: .3vw;
-}
-
-.imdbLogo, .rtLogo, .metacriticLogo {
+.rateflix--logo {
 	vertical-align: middle;
+	padding-right: 0.5vw;
 }
 
-.bob-card .bob-title span {
-	margin-left: .333vw !important;
-}
-
-.bob-card .bob-title span:first-child {
-	margin-left: 1vw !important;
-}
-
-.bob-card .imdbRating .imdbLogo,
-.bob-card .rtRating .rtLogo,
-.bob-card .metacriticRating .metacriticLogo,
-.video-title .imdbRating .imdbLogo,
-.video-title .rtRating .rtLogo,
-.video-title .metacriticRating .metacriticLogo {
-	margin-bottom: 2px;
-}
-
-.video-title .imdbRating a {
-	color: #adadad !important;
-}
-
-.episode-row .imdbRating,
-.episode-row .rtRating,
-.episode-row .metacriticRating {
-	margin-right: 10px;
-	min-width: 35px;
-	font-size: .9em !important;
-    font-weight: 400 !important;
-    color: #fff !important;
-}
-
-.episode-row .imdbRating a {
-    color: #fff !important;
+.rateflix--ratings-span {
+	padding-right: 1vw;
 }
