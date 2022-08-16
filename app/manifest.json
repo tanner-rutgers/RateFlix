@@ -43,15 +43,6 @@
     "service_worker": "javascript/background.js"
   },
 
-  "permissions": [
-    "tabs"
-  ],
-
-  "host_permissions": [
-    "https://*.netflix.com/*",
-    "https://ajax.googleapis.com/"
-  ],
-
   "web_accessible_resources": [{
     "resources": [
       "images/imdb_31x14.png",
