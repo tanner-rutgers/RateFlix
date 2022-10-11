@@ -11,7 +11,8 @@ function imdbLink(id) {
 function injectRating(ratingsDiv, rating, icon_location, link) {
 	if ((rating && rating != "N/A") || link) {
 		var icon = document.createElement("img");
-		icon.src = chrome.runtime.getURL(icon_location);
+		var browser_type = chrome ? chrome.runtime : browser.extension
+		icon.src = browser_type.getURL(icon_location);
 		icon.className = "rateflix--icon";
 
 		var span = document.createElement("span");
