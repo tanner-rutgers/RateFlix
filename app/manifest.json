@@ -1,9 +1,9 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
   "name": "RateFlix",
   "description": "Show IMDb, Rotten Tomatoes, and Metacritic ratings on Netflix™",
-  "version": "1.0",
+  "version": "3.1",
 
   "icons": {
     "16": "images/icon_16.png",
@@ -13,7 +13,7 @@
     "128": "images/icon_128.png"
   },
 
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "images/icon_16.png",
       "24": "images/icon_24.png",
@@ -23,11 +23,6 @@
     "default_title": "RateFlix",
     "default_popup": "popup.html"
   },
-
-  "permissions": [
-    "webRequest",
-    "<all_urls>"
-  ],
 
   "content_scripts": [
     {
@@ -44,9 +39,18 @@
     }
   ],
 
-  "web_accessible_resources": [
+  "background": {
+    "service_worker": "javascript/background.js"
+  },
+
+  "web_accessible_resources": [{
+    "resources": [
       "images/imdb_31x14.png",
       "images/rt_logo.png",
       "images/metacritic_logo.png"
-  ]
+    ],
+    "matches": [
+      "https://*.netflix.com/*"
+    ]
+  }]
 }
